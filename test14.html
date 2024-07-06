@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refined Adaptive Security Assessment Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --option-text: rgba(255, 255, 255, 0.9);
+            --option-border: rgba(255, 255, 255, 0.3);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #5dade2;
+            --background-color: #1a1a1a;
+            --card-background: #2c2c2c;
+            --text-color: #e0e0e0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --option-text: rgba(255, 255, 255, 0.9);
+            --option-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dashboard {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: var(--card-background);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        h2 {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+        h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+        .input-section {
+            margin-bottom: 40px;
+        }
+        .input-section label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .input-section input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 2px solid var(--option-border);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        .question-section {
+            margin-bottom: 40px;
+            background-color: var(--background-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question h2 {
+            margin-bottom: 20px;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .option {
+            padding: 15px;
+            border: 2px solid var(--option-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--option-text);
+            font-weight: 500;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            height: 160px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .option-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .option-description {
+            font-size: 0.8rem;
+            color: var(--option-text);
+            line-height: 1.4;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            hyphens: auto;
+        }
+        .recommendation, .background, .sources {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--card-background);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .sources ul {
+            padding-left: 20px;
+            list-style-type: none;
+        }
+        .sources li {
+            margin-bottom: 10px;
+        }
+        .sources a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        .sources a:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+        .hidden {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, height 0.3s ease;
+        }
+        .visible {
+            opacity: 1;
+            height: auto;
+        }
+        .background {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--background-color);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        .theme-toggle:hover {
+            background-color: #2980b9;
+        }
+        .generate-pdf {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-top: 40px;
+        }
+        .generate-pdf:hover {
+            background-color: #2980b9;
+        }
+        .toggle-references {
+            cursor: pointer;
+            color: var(--primary-color);
+            text-decoration: underline;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Light/Dark Mode</button>
+    <div class="dashboard" id="report-content">
+        <h1>Security Assessment Dashboard</h1>
+        <div class="input-section">
+            <label for="facility-name">Facility Name:</label>
+            <input type="text" id="facility-name" name="facility-name" placeholder="Enter facility name">
+            <label for="report-date">Date of Report:</label>
+            <input type="date" id="report-date" name="report-date">
+            <label for="report-number">Report Number:</label>
+            <input type="text" id="report-number" name="report-number" placeholder="Enter report number">
+        </div>
+
+        <div class="question-section">
+            <h2>Security Management and Planning</h2>
+            <div class="question" id="question1">
+                <h2>Does the facility have a designated security manager or security committee?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question1', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not have a security manager or committee.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question1', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">The facility has a security manager or committee, but security management activities are sporadic.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question1', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">Security management activities are regularly scheduled, but not coordinated with other committees, departments, or groups.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question1', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">Security activities are coordinated, but additional personnel are needed to support the facility's security mission.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question1', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">Security activities are fully coordinated and staffing levels fully support the facility's security mission.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation1"></div>
+                <div class="background hidden" id="background1"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources1')">+ References</div>
+                <div class="sources hidden" id="sources1"></div>
+            </div>
+
+            <div class="question" id="question2">
+                <h2>Does the facility have a comprehensive written security and emergency operations plan?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question2', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not have a written security and emergency operations plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question2', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">The facility has a written plan, but it is incomplete or outdated.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question2', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">The facility has a complete plan, but it is not regularly reviewed or updated.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question2', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">The facility has a complete and regularly updated plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question2', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">The facility has a complete, regularly updated plan that is integrated with other local and regional plans.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation2"></div>
+                <div class="background hidden" id="background2"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources2')">+ References</div>
+                <div class="sources hidden" id="sources2"></div>
+            </div>
+
+            <div class="question" id="question3">
+                <h2>Are employees and volunteers trained on the security and emergency operations plan?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question3', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">Employees and volunteers are not trained on the plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question3', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">Some employees and volunteers are trained, but not all.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question3', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">Most employees and volunteers are trained, but the training is infrequent.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question3', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">All employees and volunteers are regularly trained on the plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question3', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">All employees and volunteers are regularly trained and participate in exercises related to the plan.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation3"></div>
+                <div class="background hidden" id="background3"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources3')">+ References</div>
+                <div class="sources hidden" id="sources3"></div>
+            </div>
+
+            <div class="question" id="question4">
+                <h2>Are visitors or clients informed about relevant elements of the security and emergency operations plan?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question4', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">Visitors or clients are not informed about the security and emergency operations plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question4', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">Some visitors or clients are informed, but not all.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question4', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">Most visitors or clients are informed, but the information is not comprehensive.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question4', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">All visitors or clients are informed about relevant elements of the security and emergency operations plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question4', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">All visitors or clients are comprehensively informed about relevant elements of the security and emergency operations plan, including through briefings or written materials.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation4"></div>
+                <div class="background hidden" id="background4"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources4')">+ References</div>
+                <div class="sources hidden" id="sources4"></div>
+            </div>
+
+            <div class="question" id="question5">
+                <h2>Has the facility coordinated its security and emergency operations plan with local first responders?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question5', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility has not coordinated its plan with local first responders.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question5', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">Some coordination has been attempted, but it is incomplete or infrequent.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question5', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">The facility has coordinated its plan, but not all aspects are covered comprehensively.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question5', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">The facility has coordinated its plan comprehensively with local first responders.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question5', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">The facility has thoroughly coordinated its plan with local first responders and conducts regular joint exercises.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation5"></div>
+                <div class="background hidden" id="background5"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources5')">+ References</div>
+                <div class="sources hidden" id="sources5"></div>
+            </div>
+
+            <div class="question" id="question6">
+                <h2>Does the facility conduct regular exercises of the security and emergency operations plan?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question6', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not conduct regular exercises of the plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question6', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">Exercises are conducted sporadically and do not cover all scenarios.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question6', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">Regular exercises are conducted, but not all elements of the plan are tested.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question6', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">Regular exercises are conducted covering most elements of the plan.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question6', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">Comprehensive regular exercises are conducted covering all elements of the plan, with feedback and improvements implemented.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation6"></div>
+                <div class="background hidden" id="background6"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources6')">+ References</div>
+                <div class="sources hidden" id="sources6"></div>
+            </div>
+
+            <div class="question" id="question7">
+                <h2>Does the facility have lockdown, lockout, and shelter-in-place procedures?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question7', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not have these procedures.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question7', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">The facility has some procedures, but they are incomplete or not regularly updated.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question7', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">The facility has complete procedures, but they are not regularly reviewed or practiced.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question7', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">The facility has complete and regularly updated procedures, but they are not practiced frequently.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question7', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">The facility has complete, regularly updated procedures that are practiced frequently.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation7"></div>
+                <div class="background hidden" id="background7"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources7')">+ References</div>
+                <div class="sources hidden" id="sources7"></div>
+            </div>
+
+            <div class="question" id="question8">
+                <h2>Does the facility have mass notification capabilities?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question8', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not have mass notification capabilities.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question8', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">The facility has some notification capabilities, but they are limited in scope or reliability.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question8', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">The facility has reliable mass notification capabilities, but they are not integrated with all emergency plans.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question8', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">The facility has reliable and integrated mass notification capabilities, but they are not regularly tested.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question8', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">The facility has reliable, integrated, and regularly tested mass notification capabilities.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation8"></div>
+                <div class="background hidden" id="background8"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources8')">+ References</div>
+                <div class="sources hidden" id="sources8"></div>
+            </div>
+
+            <div class="question" id="question9">
+                <h2>Does the facility have crisis communications plans and procedures?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question9', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not have crisis communications plans and procedures.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question9', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">The facility has some plans and procedures, but they are incomplete or not regularly updated.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question9', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">The facility has complete plans and procedures, but they are not regularly reviewed or practiced.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question9', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">The facility has complete and regularly updated plans and procedures, but they are not practiced frequently.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question9', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">The facility has complete, regularly updated plans and procedures that are practiced frequently.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation9"></div>
+                <div class="background hidden" id="background9"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources9')">+ References</div>
+                <div class="sources hidden" id="sources9"></div>
+            </div>
+
+            <div class="question" id="question10">
+                <h2>Does the facility receive threat information or security-related bulletins from external sources?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question10', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not receive any external threat information or security-related bulletins.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question10', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">The facility receives some information, but it is not comprehensive or timely.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question10', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">The facility receives regular threat information and bulletins, but they are not always relevant or actionable.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question10', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">The facility receives comprehensive and timely threat information and bulletins that are often relevant and actionable.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question10', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">The facility receives comprehensive, timely, and highly relevant threat information and bulletins that are consistently actionable.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation10"></div>
+                <div class="background hidden" id="background10"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources10')">+ References</div>
+                <div class="sources hidden" id="sources10"></div>
+            </div>
+
+            <div class="question" id="question11">
+                <h2>Does the facility participate in any external security or emergency preparedness working groups?</h2>
+                <div class="options">
+                    <button class="option" style="background-color: #e74c3c;" onclick="selectOption('question11', 'Very Low')">
+                        <span class="option-title">Very Low</span>
+                        <span class="option-description">The facility does not participate in any external groups.</span>
+                    </button>
+                    <button class="option" style="background-color: #e67e22;" onclick="selectOption('question11', 'Low')">
+                        <span class="option-title">Low</span>
+                        <span class="option-description">The facility participates in some groups, but involvement is sporadic or not fully engaged.</span>
+                    </button>
+                    <button class="option" style="background-color: #f1c40f;" onclick="selectOption('question11', 'Medium')">
+                        <span class="option-title">Medium</span>
+                        <span class="option-description">The facility participates regularly in some groups, but does not lead or significantly contribute.</span>
+                    </button>
+                    <button class="option" style="background-color: #3498db;" onclick="selectOption('question11', 'High')">
+                        <span class="option-title">High</span>
+                        <span class="option-description">The facility actively participates and contributes to multiple groups.</span>
+                    </button>
+                    <button class="option" style="background-color: #2ecc71;" onclick="selectOption('question11', 'Very High')">
+                        <span class="option-title">Very High</span>
+                        <span class="option-description">The facility is a leading participant in multiple groups, significantly contributing to initiatives and improvements.</span>
+                    </button>
+                </div>
+                <div class="recommendation hidden" id="recommendation11"></div>
+                <div class="background hidden" id="background11"></div>
+                <div class="toggle-references" onclick="toggleReferences('sources11')">+ References</div>
+                <div class="sources hidden" id="sources11"></div>
+            </div>
+        </div>
+
+        <button class="generate-pdf" onclick="generatePDF()">Generate PDF Report</button>
+        <button class="generate-pdf" onclick="generateDetailedPDF()">Generate Detailed PDF Report</button>
+        <button class="generate-pdf" onclick="toggleDetailedElements()">Toggle Detailed Elements</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        function selectOption(questionId, level) {
+            let recommendation = "<h3>Recommendation</h3>";
+            let sources = "<h3>Relevant Sources</h3><ul>";
+            let background = "<h3>Background</h3>";
+
+            switch(questionId) {
+                case 'question1':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Immediately designate a security manager or form a security committee. Provide basic security management training and establish regular security activities. Reach out to local law enforcement for initial guidance.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                                <li><a href="https://www.securitymagazine.com/articles/90255-seven-ways-to-improve-security-management" target="_blank">Security Magazine: Seven Ways to Improve Security Management</a></li>
+                            `;
+                            background += "<p>Having a security manager or committee is essential for coordinating security activities and making informed decisions. Without such a role, the facility is vulnerable to uncoordinated and ineffective security measures.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Formalize the role of the security manager or committee. Establish regular security management activities and begin coordinating with other departments. Provide comprehensive security management training.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Regular and formalized security management activities help ensure that security measures are consistently applied and coordinated. This coordination is crucial for addressing potential security gaps.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Improve coordination of security activities with other committees, departments, and groups. Develop a more comprehensive approach to security management that integrates with overall facility operations. This should include regular meetings to align security objectives with organizational goals and periodic reviews to ensure effectiveness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive security management involves integrating security activities with the facility's overall operations, ensuring all departments are aligned in their efforts to maintain a secure environment.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Assess staffing needs and consider adding personnel to fully support the facility's security mission. Enhance coordination efforts and ensure security is integrated into all relevant facility operations. This may involve the recruitment of additional security professionals or the use of advanced security technologies to bolster the existing framework.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Ensuring sufficient staffing levels for security allows for more effective implementation of security measures and better support for the facility's security mission.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain current practices and continue to evaluate and update security management processes regularly. Stay informed about emerging threats and best practices. Consider sharing your successful security management model with other facilities to foster a culture of security excellence across the industry.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Continuous review and updates to security management processes ensure that the facility remains prepared for emerging threats and can adopt best practices as they evolve.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation1').innerHTML = recommendation;
+                    document.getElementById('sources1').innerHTML = sources;
+                    document.getElementById('background1').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation1').classList.remove('hidden');
+                        document.getElementById('recommendation1').classList.add('visible');
+                        document.getElementById('sources1').classList.remove('hidden');
+                        document.getElementById('sources1').classList.add('visible');
+                        document.getElementById('background1').classList.remove('hidden');
+                        document.getElementById('background1').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question2':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Develop a comprehensive written security and emergency operations plan. Engage key stakeholders and local emergency services in the planning process to ensure a holistic approach that addresses all potential risks and scenarios.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.iso.org/standard/73906.html" target="_blank">ISO: Information Security Management Systems - Requirements</a></li>
+                            `;
+                            background += "<p>A comprehensive written security and emergency operations plan is critical for ensuring all staff know their roles and responsibilities during an emergency. This plan should cover a wide range of potential incidents and include detailed procedures for each scenario.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Update and complete the existing security and emergency operations plan. Ensure it addresses all potential threats and scenarios. Involve a multidisciplinary team in the update process to incorporate diverse perspectives and expertise.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.sans.org/security-resources/policies/" target="_blank">SANS Institute: Security Resources and Policies</a></li>
+                            `;
+                            background += "<p>Updating the plan ensures that all current risks are addressed and the plan remains relevant and effective. Regular updates should be scheduled, and the plan should be reviewed by all relevant parties to ensure its comprehensiveness.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Regularly review and update the security and emergency operations plan. Involve all relevant departments and stakeholders in the review process. Establish a review committee that meets quarterly to evaluate the plan's effectiveness and implement necessary adjustments.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Regular reviews and updates ensure the plan remains effective and incorporates the latest best practices and threat information. This proactive approach helps maintain readiness and improves response capabilities.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Continue regular reviews and updates to the security and emergency operations plan. Ensure it is fully integrated with local and regional emergency plans. Develop collaborative exercises with local emergency services to test and refine the plan.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Integration with local and regional plans ensures coordinated response efforts during an emergency. Collaborative exercises help identify and address gaps in the plan, enhancing overall preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain the current practices of regular review and updates. Share your plan with similar facilities to promote best practices and foster a culture of preparedness. Consider conducting peer reviews to gain insights and further refine the plan.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices helps improve overall security within the community and promotes a culture of preparedness. Peer reviews provide valuable feedback and help identify potential improvements.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation2').innerHTML = recommendation;
+                    document.getElementById('sources2').innerHTML = sources;
+                    document.getElementById('background2').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation2').classList.remove('hidden');
+                        document.getElementById('recommendation2').classList.add('visible');
+                        document.getElementById('sources2').classList.remove('hidden');
+                        document.getElementById('sources2').classList.add('visible');
+                        document.getElementById('background2').classList.remove('hidden');
+                        document.getElementById('background2').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question3':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Implement a comprehensive training program for all employees and volunteers on the security and emergency operations plan. Ensure the training covers all relevant scenarios and procedures. Regularly assess the training effectiveness and update materials as needed.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.sans.org/security-resources/policies/" target="_blank">SANS Institute: Security Resources and Policies</a></li>
+                            `;
+                            background += "<p>Training ensures that all staff are aware of their roles and responsibilities during an emergency, reducing confusion and improving response times. Comprehensive training programs enhance overall preparedness and resilience.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand the training program to include all employees and volunteers. Ensure the training is comprehensive and covers all aspects of the security and emergency operations plan. Schedule regular refreshers to keep everyone up-to-date.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive training ensures that all staff are prepared to respond effectively in an emergency. Regular refreshers help reinforce knowledge and keep staff informed about any updates or changes.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure regular training sessions for all employees and volunteers. Update training materials regularly to reflect changes in the security and emergency operations plan. Incorporate practical exercises to enhance learning and retention.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                            `;
+                            background += "<p>Regular training ensures that staff remain familiar with the plan and are able to respond effectively to any changes or updates. Practical exercises help reinforce theoretical knowledge and improve overall preparedness.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Continue regular training sessions and exercises. Ensure all staff are familiar with the latest updates to the security and emergency operations plan. Utilize feedback from training sessions to continuously improve the training program.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular exercises and updates ensure that staff are prepared for a variety of scenarios and that the plan remains effective. Continuous improvement based on feedback helps maintain a high standard of preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain the current practices of regular training and exercises. Consider sharing your training program with similar facilities to promote best practices. Encourage staff to participate in external training and certification programs to further enhance their skills.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices helps improve overall security within the community and promotes a culture of preparedness. Encouraging staff to pursue external training and certifications further enhances the facility's overall security posture.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation3').innerHTML = recommendation;
+                    document.getElementById('sources3').innerHTML = sources;
+                    document.getElementById('background3').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation3').classList.remove('hidden');
+                        document.getElementById('recommendation3').classList.add('visible');
+                        document.getElementById('sources3').classList.remove('hidden');
+                        document.getElementById('sources3').classList.add('visible');
+                        document.getElementById('background3').classList.remove('hidden');
+                        document.getElementById('background3').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question4':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Ensure that visitors and clients are informed about relevant elements of the security and emergency operations plan. This can be achieved through visible signage, written materials, and verbal briefings as necessary.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Informing visitors and clients about the security and emergency operations plan helps ensure their safety and can aid in their cooperation during an emergency situation.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand efforts to inform visitors and clients about the security and emergency operations plan. Consider including information in visitor welcome packets and ensuring that staff are trained to provide this information verbally when appropriate.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a
+<head>
+    <!-- Previous head content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        function toggleReferences(id) {
+            const element = document.getElementById(id);
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+                element.classList.add('visible');
+            } else {
+                element.classList.remove('visible');
+                element.classList.add('hidden');
+            }
+        }
+
+        function selectOption(questionId, level) {
+            let recommendation = "<h3>Recommendation</h3>";
+            let sources = "<h3>Relevant Sources</h3><ul>";
+            let background = "<h3>Background</h3>";
+
+            switch(questionId) {
+                case 'question1':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Immediately designate a security manager or form a security committee. Provide basic security management training and establish regular security activities. Reach out to local law enforcement for initial guidance.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                                <li><a href="https://www.securitymagazine.com/articles/90255-seven-ways-to-improve-security-management" target="_blank">Security Magazine: Seven Ways to Improve Security Management</a></li>
+                            `;
+                            background += "<p>Having a security manager or committee is essential for coordinating security activities and making informed decisions. Without such a role, the facility is vulnerable to uncoordinated and ineffective security measures.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Formalize the role of the security manager or committee. Establish regular security management activities and begin coordinating with other departments. Provide comprehensive security management training.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Regular and formalized security management activities help ensure that security measures are consistently applied and coordinated. This coordination is crucial for addressing potential security gaps.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Improve coordination of security activities with other committees, departments, and groups. Develop a more comprehensive approach to security management that integrates with overall facility operations. This should include regular meetings to align security objectives with organizational goals and periodic reviews to ensure effectiveness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive security management involves integrating security activities with the facility's overall operations, ensuring all departments are aligned in their efforts to maintain a secure environment.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Assess staffing needs and consider adding personnel to fully support the facility's security mission. Enhance coordination efforts and ensure security is integrated into all relevant facility operations. This may involve the recruitment of additional security professionals or the use of advanced security technologies to bolster the existing framework.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Ensuring sufficient staffing levels for security allows for more effective implementation of security measures and better support for the facility's security mission.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain current practices and continue to evaluate and update security management processes regularly. Stay informed about emerging threats and best practices. Consider sharing your successful security management model with other facilities to foster a culture of security excellence across the industry.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Continuous review and updates to security management processes ensure that the facility remains prepared for emerging threats and can adopt best practices as they evolve.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation1').innerHTML = recommendation;
+                    document.getElementById('sources1').innerHTML = sources;
+                    document.getElementById('background1').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation1').classList.remove('hidden');
+                        document.getElementById('recommendation1').classList.add('visible');
+                        document.getElementById('sources1').classList.remove('hidden');
+                        document.getElementById('sources1').classList.add('visible');
+                        document.getElementById('background1').classList.remove('hidden');
+                        document.getElementById('background1').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question2':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Develop a comprehensive written security and emergency operations plan. Engage key stakeholders and local emergency services in the planning process to ensure a holistic approach that addresses all potential risks and scenarios.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.iso.org/standard/73906.html" target="_blank">ISO: Information Security Management Systems - Requirements</a></li>
+                            `;
+                            background += "<p>A comprehensive written security and emergency operations plan is critical for ensuring all staff know their roles and responsibilities during an emergency. This plan should cover a wide range of potential incidents and include detailed procedures for each scenario.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Update and complete the existing security and emergency operations plan. Ensure it addresses all potential threats and scenarios. Involve a multidisciplinary team in the update process to incorporate diverse perspectives and expertise.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.sans.org/security-resources/policies/" target="_blank">SANS Institute: Security Resources and Policies</a></li>
+                            `;
+                            background += "<p>Updating the plan ensures that all current risks are addressed and the plan remains relevant and effective. Regular updates should be scheduled, and the plan should be reviewed by all relevant parties to ensure its comprehensiveness.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Regularly review and update the security and emergency operations plan. Involve all relevant departments and stakeholders in the review process. Establish a review committee that meets quarterly to evaluate the plan's effectiveness and implement necessary adjustments.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Regular reviews and updates ensure the plan remains effective and incorporates the latest best practices and threat information. This proactive approach helps maintain readiness and improves response capabilities.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Continue regular reviews and updates to the security and emergency operations plan. Ensure it is fully integrated with local and regional emergency plans. Develop collaborative exercises with local emergency services to test and refine the plan.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Integration with local and regional plans ensures coordinated response efforts during an emergency. Collaborative exercises help identify and address gaps in the plan, enhancing overall preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain the current practices of regular review and updates. Share your plan with similar facilities to promote best practices and foster a culture of preparedness. Consider conducting peer reviews to gain insights and further refine the plan.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices helps improve overall security within the community and promotes a culture of preparedness. Peer reviews provide valuable feedback and help identify potential improvements.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation2').innerHTML = recommendation;
+                    document.getElementById('sources2').innerHTML = sources;
+                    document.getElementById('background2').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation2').classList.remove('hidden');
+                        document.getElementById('recommendation2').classList.add('visible');
+                        document.getElementById('sources2').classList.remove('hidden');
+                        document.getElementById('sources2').classList.add('visible');
+                        document.getElementById('background2').classList.remove('hidden');
+                        document.getElementById('background2').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question3':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Implement a comprehensive training program for all employees and volunteers on the security and emergency operations plan. Ensure the training covers all relevant scenarios and procedures. Regularly assess the training effectiveness and update materials as needed.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.sans.org/security-resources/policies/" target="_blank">SANS Institute: Security Resources and Policies</a></li>
+                            `;
+                            background += "<p>Training ensures that all staff are aware of their roles and responsibilities during an emergency, reducing confusion and improving response times. Comprehensive training programs enhance overall preparedness and resilience.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand the training program to include all employees and volunteers. Ensure the training is comprehensive and covers all aspects of the security and emergency operations plan. Schedule regular refreshers to keep everyone up-to-date.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive training ensures that all staff are prepared to respond effectively in an emergency. Regular refreshers help reinforce knowledge and keep staff informed about any updates or changes.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure regular training sessions for all employees and volunteers. Update training materials regularly to reflect changes in the security and emergency operations plan. Incorporate practical exercises to enhance learning and retention.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                            `;
+                            background += "<p>Regular training ensures that staff remain familiar with the plan and are able to respond effectively to any changes or updates. Practical exercises help reinforce theoretical knowledge and improve overall preparedness.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Continue regular training sessions and exercises. Ensure all staff are familiar with the latest updates to the security and emergency operations plan. Utilize feedback from training sessions to continuously improve the training program.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular exercises and updates ensure that staff are prepared for a variety of scenarios and that the plan remains effective. Continuous improvement based on feedback helps maintain a high standard of preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain the current practices of regular training and exercises. Consider sharing your training program with similar facilities to promote best practices. Encourage staff to participate in external training and certification programs to further enhance their skills.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices helps improve overall security within the community and promotes a culture of preparedness. Encouraging staff to pursue external training and certifications further enhances the facility's overall security posture.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation3').innerHTML = recommendation;
+                    document.getElementById('sources3').innerHTML = sources;
+                    document.getElementById('background3').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation3').classList.remove('hidden');
+                        document.getElementById('recommendation3').classList.add('visible');
+                        document.getElementById('sources3').classList.remove('hidden');
+                        document.getElementById('sources3').classList.add('visible');
+                        document.getElementById('background3').classList.remove('hidden');
+                        document.getElementById('background3').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question4':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Ensure that visitors and clients are informed about relevant elements of the security and emergency operations plan. This can be achieved through visible signage, written materials, and verbal briefings as necessary.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Informing visitors and clients about the security and emergency operations plan helps ensure their safety and can aid in their cooperation during an emergency situation.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand efforts to inform visitors and clients about the security and emergency operations plan. Consider including information in visitor welcome packets and ensuring that staff are trained to provide this information verbally when appropriate.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Providing comprehensive information to visitors and clients ensures they are aware of procedures and can respond appropriately during an emergency.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Regularly review and update the methods used to inform visitors and clients about the security and emergency operations plan. Incorporate feedback from visitors to improve the effectiveness of communication.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Regular updates and feedback integration help ensure that the information provided remains relevant and effective in enhancing visitor safety.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Continue to refine and expand the methods used to inform visitors and clients about the security and emergency operations plan. Utilize multiple channels of communication, including digital signage, mobile applications, and interactive briefings.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Using multiple channels of communication ensures that all visitors and clients receive the necessary information in a format that is accessible to them.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain current practices of informing visitors and clients. Regularly update materials and briefings to ensure they reflect the latest security procedures and protocols. Consider offering feedback forms to gather input from visitors on the effectiveness of the information provided.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Regular updates and feedback ensure that the information provided remains effective and relevant. Gathering input from visitors helps continuously improve the communication strategy.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation4').innerHTML = recommendation;
+                    document.getElementById('sources4').innerHTML = sources;
+                    document.getElementById('background4').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation4').classList.remove('hidden');
+                        document.getElementById('recommendation4').classList.add('visible');
+                        document.getElementById('sources4').classList.remove('hidden');
+                        document.getElementById('sources4').classList.add('visible');
+                        document.getElementById('background4').classList.remove('hidden');
+                        document.getElementById('background4').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question5':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Establish communication with local first responders to begin coordinating the facility's security and emergency operations plan. This may include initial meetings to discuss mutual aid agreements and response protocols.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Coordination with local first responders is essential for ensuring a timely and effective response during emergencies. Initial meetings can help establish relationships and set the foundation for comprehensive coordination.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand efforts to coordinate the facility's plan with local first responders. This may include joint training sessions, regular communication, and the development of integrated response protocols.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Regular coordination and joint training sessions help ensure that all parties are familiar with each other's procedures and can respond effectively together during emergencies.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure that all aspects of the facility's plan are comprehensively coordinated with local first responders. This may involve detailed joint exercises, regular updates to response protocols, and continuous improvement based on feedback from exercises and actual incidents.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive coordination ensures that all response protocols are aligned and that first responders are fully aware of the facility's procedures and resources, leading to more effective joint responses during emergencies.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Maintain regular communication and coordination with local first responders. Continue to conduct joint exercises and update response protocols as needed. Ensure that all staff are aware of the coordinated plan and their roles during joint responses.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular communication and coordination help maintain readiness and ensure that all parties can respond effectively together during emergencies. Ongoing joint exercises and updates help identify and address any gaps in the plan.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Continue to lead in coordination efforts with local first responders. Share best practices and lessons learned with similar facilities to promote a culture of preparedness and effective response. Consider participating in regional or national preparedness initiatives.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Leading coordination efforts and sharing best practices help improve overall preparedness within the community and beyond. Participation in broader initiatives can enhance the facility's reputation and contribute to national preparedness efforts.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation5').innerHTML = recommendation;
+                    document.getElementById('sources5').innerHTML = sources;
+                    document.getElementById('background5').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation5').classList.remove('hidden');
+                        document.getElementById('recommendation5').classList.add('visible');
+                        document.getElementById('sources5').classList.remove('hidden');
+                        document.getElementById('sources5').classList.add('visible');
+                        document.getElementById('background5').classList.remove('hidden');
+                        document.getElementById('background5').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question6':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Establish a schedule for regular exercises of the security and emergency operations plan. These exercises should cover a variety of scenarios and involve all relevant staff members.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Regular exercises are essential for testing the effectiveness of the plan and ensuring that all staff are familiar with their roles and responsibilities during an emergency. Exercises should cover a range of scenarios to prepare for various potential incidents.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Increase the frequency and comprehensiveness of exercises. Ensure that all elements of the plan are tested, and that exercises include participation from all relevant staff members.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Comprehensive and frequent exercises ensure that all aspects of the plan are thoroughly tested and that staff remain familiar with procedures and protocols. This helps improve overall preparedness and response capabilities.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure that regular exercises are comprehensive and include feedback and improvements. Involve external partners, such as local first responders, in exercises to test coordination and response efforts.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Involving external partners in exercises helps ensure that coordination and communication are effective during joint responses. Feedback from exercises should be used to make continuous improvements to the plan and procedures.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Maintain regular and comprehensive exercise schedules. Ensure that all exercises include feedback and improvements. Consider conducting unannounced drills to test readiness and response capabilities.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular and comprehensive exercises, including unannounced drills, help ensure that all staff are prepared for various scenarios and that the plan remains effective. Continuous feedback and improvements help maintain a high standard of preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Continue regular and comprehensive exercises. Share best practices and lessons learned from exercises with similar facilities. Consider participating in regional or national exercise initiatives to further enhance preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices and participating in broader exercise initiatives help improve overall preparedness within the community and beyond. This also helps the facility stay informed about emerging threats and best practices.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation6').innerHTML = recommendation;
+                    document.getElementById('sources6').innerHTML = sources;
+                    document.getElementById('background6').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation6').classList.remove('hidden');
+                        document.getElementById('recommendation6').classList.add('visible');
+                        document.getElementById('sources6').classList.remove('hidden');
+                        document.getElementById('sources6').classList.add('visible');
+                        document.getElementById('background6').classList.remove('hidden');
+                        document.getElementById('background6').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question7':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Develop lockdown, lockout, and shelter-in-place procedures. Ensure that all staff are trained on these procedures and that they are included in the security and emergency operations plan.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Lockdown, lockout, and shelter-in-place procedures are essential for ensuring the safety of staff and visitors during various types of emergencies. These procedures should be well-documented and regularly reviewed.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Complete and regularly update lockdown, lockout, and shelter-in-place procedures. Ensure that all staff are trained on these procedures and that regular drills are conducted to test their effectiveness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Regularly updated procedures and training ensure that all staff are familiar with their roles and responsibilities during an emergency. Drills help test the effectiveness of these procedures and identify areas for improvement.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure that lockdown, lockout, and shelter-in-place procedures are comprehensive and regularly reviewed. Involve all relevant staff in training and drills to ensure a high level of preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive procedures and regular reviews help ensure that all staff are prepared for various emergency scenarios. Involving all relevant staff in training and drills helps maintain a high level of readiness.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Continue to maintain and regularly update lockdown, lockout, and shelter-in-place procedures. Conduct regular drills and gather feedback to continuously improve the procedures. Ensure that all staff are aware of any updates or changes.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular updates and drills help ensure that procedures remain effective and that staff are prepared for various emergency scenarios. Continuous improvement based on feedback helps maintain a high standard of preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain current practices of regularly updating and reviewing procedures. Consider sharing your procedures and best practices with similar facilities to promote a culture of preparedness. Participate in broader initiatives to enhance overall preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices and participating in broader initiatives help improve overall preparedness within the community and beyond. This also helps the facility stay informed about emerging threats and best practices.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation7').innerHTML = recommendation;
+                    document.getElementById('sources7').innerHTML = sources;
+                    document.getElementById('background7').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation7').classList.remove('hidden');
+                        document.getElementById('recommendation7').classList.add('visible');
+                        document.getElementById('sources7').classList.remove('hidden');
+                        document.getElementById('sources7').classList.add('visible');
+                        document.getElementById('background7').classList.remove('hidden');
+                        document.getElementById('background7').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question8':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Develop mass notification capabilities to ensure that all staff and visitors can be quickly informed during an emergency. This may include installing public address systems, text message alerts, and other communication tools.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Mass notification capabilities are essential for ensuring that all staff and visitors can be quickly informed during an emergency. These tools help provide clear and timely information, which is crucial for effective response.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand and improve existing mass notification capabilities. Ensure that all communication tools are reliable and that staff are trained on how to use them. Regularly test and update the system to ensure effectiveness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Reliable and effective communication tools are essential for providing clear and timely information during an emergency. Regular testing and updates help ensure that the system remains effective and that staff are familiar with its use.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure that mass notification capabilities are fully integrated with the facility's emergency operations plan. Regularly test the system and conduct training sessions to ensure that all staff are familiar with its use. Gather feedback from staff and visitors to continuously improve the system.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Integration with the emergency operations plan ensures that mass notification capabilities are used effectively during an emergency. Regular testing, training, and feedback help maintain the system's effectiveness and improve overall preparedness.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Maintain regular testing and updates of mass notification capabilities. Ensure that all staff are trained on the system and that any feedback is used to make continuous improvements. Consider expanding the system to include additional communication tools and technologies.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular testing and updates help ensure that the mass notification system remains effective. Expanding the system to include additional communication tools and technologies can enhance overall preparedness and response capabilities.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Continue to maintain and improve mass notification capabilities. Share best practices and lessons learned with similar facilities to promote a culture of preparedness. Participate in broader initiatives to enhance overall preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices and participating in broader initiatives help improve overall preparedness within the community and beyond. This also helps the facility stay informed about emerging threats and best practices.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation8').innerHTML = recommendation;
+                    document.getElementById('sources8').innerHTML = sources;
+                    document.getElementById('background8').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation8').classList.remove('hidden');
+                        document.getElementById('recommendation8').classList.add('visible');
+                        document.getElementById('sources8').classList.remove('hidden');
+                        document.getElementById('sources8').classList.add('visible');
+                        document.getElementById('background8').classList.remove('hidden');
+                        document.getElementById('background8').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question9':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Develop crisis communications plans and procedures. Ensure that all staff are trained on these plans and that they are included in the security and emergency operations plan.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Crisis communications plans and procedures are essential for ensuring clear and timely communication during an emergency. These plans should be well-documented and regularly reviewed.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Complete and regularly update crisis communications plans and procedures. Ensure that all staff are trained on these plans and that regular drills are conducted to test their effectiveness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Regularly updated plans and procedures ensure that all staff are familiar with their roles and responsibilities during an emergency. Drills help test the effectiveness of these plans and identify areas for improvement.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure that crisis communications plans and procedures are comprehensive and regularly reviewed. Involve all relevant staff in training and drills to ensure a high level of preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive plans and regular reviews help ensure that all staff are prepared for various emergency scenarios. Involving all relevant staff in training and drills helps maintain a high level of readiness.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Continue to maintain and regularly update crisis communications plans and procedures. Conduct regular drills and gather feedback to continuously improve the plans. Ensure that all staff are aware of any updates or changes.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular updates and drills help ensure that plans remain effective and that staff are prepared for various emergency scenarios. Continuous improvement based on feedback helps maintain a high standard of preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Maintain current practices of regularly updating and reviewing plans. Consider sharing your plans and best practices with similar facilities to promote a culture of preparedness. Participate in broader initiatives to enhance overall preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices and participating in broader initiatives help improve overall preparedness within the community and beyond. This also helps the facility stay informed about emerging threats and best practices.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation9').innerHTML = recommendation;
+                    document.getElementById('sources9').innerHTML = sources;
+                    document.getElementById('background9').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation9').classList.remove('hidden');
+                        document.getElementById('recommendation9').classList.add('visible');
+                        document.getElementById('sources9').classList.remove('hidden');
+                        document.getElementById('sources9').classList.add('visible');
+                        document.getElementById('background9').classList.remove('hidden');
+                        document.getElementById('background9').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question10':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Establish a process for regularly receiving threat information and security-related bulletins from reliable external sources. This may include subscribing to relevant newsletters, joining security organizations, and establishing communication with local law enforcement.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Regularly receiving threat information and security-related bulletins helps ensure that the facility is aware of potential threats and can take appropriate measures to mitigate them. Reliable external sources provide valuable insights and updates on emerging threats.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand efforts to receive comprehensive and timely threat information and security-related bulletins. Ensure that all relevant staff are aware of this information and that it is used to inform security planning and decision-making.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Comprehensive and timely threat information helps ensure that the facility is aware of potential threats and can take appropriate measures to mitigate them. Sharing this information with relevant staff helps ensure that everyone is informed and prepared.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure that threat information and security-related bulletins are regularly reviewed and used to inform security planning and decision-making. Establish a process for gathering feedback from staff on the relevance and usefulness of this information.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Regularly reviewing threat information and gathering feedback helps ensure that the information remains relevant and useful for security planning and decision-making. This proactive approach helps maintain readiness and improve response capabilities.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Maintain regular receipt and review of comprehensive and timely threat information. Ensure that this information is shared with all relevant staff and used to inform security planning and decision-making. Gather feedback to continuously improve the process.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Regular receipt and review of comprehensive threat information help ensure that the facility remains informed and prepared for potential threats. Continuous feedback and improvement help maintain a high standard of preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Continue to maintain and improve the process for receiving and reviewing threat information. Share best practices and lessons learned with similar facilities to promote a culture of preparedness. Participate in broader initiatives to enhance overall preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Sharing best practices and participating in broader initiatives help improve overall preparedness within the community and beyond. This also helps the facility stay informed about emerging threats and best practices.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation10').innerHTML = recommendation;
+                    document.getElementById('sources10').innerHTML = sources;
+                    document.getElementById('background10').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation10').classList.remove('hidden');
+                        document.getElementById('recommendation10').classList.add('visible');
+                        document.getElementById('sources10').classList.remove('hidden');
+                        document.getElementById('sources10').classList.add('visible');
+                        document.getElementById('background10').classList.remove('hidden');
+                        document.getElementById('background10').classList.add('visible');
+                    }, 100);
+                    break;
+                case 'question11':
+                    switch(level) {
+                        case 'Very Low':
+                            recommendation += "<p>Begin participating in external security or emergency preparedness working groups. These groups can provide valuable insights and resources for improving the facility's security and emergency preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/19_0415_cisa_soft-targets-and-crowded-places-security-plan-overview.pdf" target="_blank">CISA: Security Plan Overview for Soft Targets and Crowded Places</a></li>
+                                <li><a href="https://www.dhs.gov/sites/default/files/publications/dhs-risk-lexicon-2010_0.pdf" target="_blank">DHS: Risk Lexicon - Key security terms and concepts</a></li>
+                            `;
+                            background += "<p>Participation in external working groups provides access to valuable insights, resources, and best practices for improving the facility's security and emergency preparedness. These groups can also provide support and collaboration opportunities during emergencies.</p>";
+                            break;
+                        case 'Low':
+                            recommendation += "<p>Expand participation in external working groups. Ensure that involvement is consistent and that the facility actively contributes to initiatives and discussions. Regularly review and implement relevant insights and best practices from these groups.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Consistent participation and active contribution to external working groups help ensure that the facility benefits from valuable insights and best practices. Regularly reviewing and implementing relevant information helps improve overall preparedness.</p>";
+                            break;
+                        case 'Medium':
+                            recommendation += "<p>Ensure that the facility's participation in external working groups is comprehensive and that insights and best practices are regularly reviewed and implemented. Establish a process for gathering feedback from staff on the relevance and usefulness of this participation.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-planning-response-active-shooter-guide-non-fouo-nov-2015-508.pdf" target="_blank">CISA: Planning and Response to an Active Shooter</a></li>
+                                <li><a href="https://www.fema.gov/sites/default/files/2020-03/fema_faith-communities_developing-emergency-operations_plan_2014.pdf" target="_blank">FEMA: Guide for Developing High-Quality Emergency Operations Plans</a></li>
+                                <li><a href="https://www.osha.gov/sites/default/files/publications/osha3152.pdf" target="_blank">OSHA: Safety and Health Management Systems eTool</a></li>
+                            `;
+                            background += "<p>Comprehensive participation and regular review of insights and best practices help ensure that the facility benefits from valuable resources and information. Gathering feedback helps maintain relevance and usefulness.</p>";
+                            break;
+                        case 'High':
+                            recommendation += "<p>Maintain active participation in external working groups and regularly review and implement insights and best practices. Share the facility's experiences and best practices with other members to promote a culture of preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/isc-risk-management-process-2016-508.pdf" target="_blank">CISA: Risk Management Process - Interagency Security Committee</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" target="_blank">NIST: Security and Privacy Controls for Information Systems and Organizations</a></li>
+                            `;
+                            background += "<p>Active participation and sharing of experiences and best practices help promote a culture of preparedness within the community and beyond. Regularly reviewing and implementing relevant information helps maintain a high standard of preparedness.</p>";
+                            break;
+                        case 'Very High':
+                            recommendation += "<p>Continue to lead in participation in external working groups. Share best practices and lessons learned with similar facilities to promote a culture of preparedness. Participate in broader initiatives to enhance overall preparedness.</p>";
+                            sources += `
+                                <li><a href="https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20and%20Physical%20Security%20Convergence_508_01.05.2021_0.pdf" target="_blank">CISA: Cybersecurity and Physical Security Convergence - Advanced concepts</a></li>
+                                <li><a href="https://www.asisonline.org/publications--resources/standards--guidelines/organizational-resilience/" target="_blank">ASIS International: Organizational Resilience Standard</a></li>
+                            `;
+                            background += "<p>Leading participation and sharing best practices help improve overall preparedness within the community and beyond. This also helps the facility stay informed about emerging threats and best practices.</p>";
+                            break;
+                    }
+                    document.getElementById('recommendation11').innerHTML = recommendation;
+                    document.getElementById('sources11').innerHTML = sources;
+                    document.getElementById('background11').innerHTML = background;
+
+                    setTimeout(() => {
+                        document.getElementById('recommendation11').classList.remove('hidden');
+                        document.getElementById('recommendation11').classList.add('visible');
+                        document.getElementById('sources11').classList.remove('hidden');
+                        document.getElementById('sources11').classList.add('visible');
+                        document.getElementById('background11').classList.remove('hidden');
+                        document.getElementById('background11').classList.add('visible');
+                    }, 100);
+                    break;
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+        }
+
+        function generatePDF() {
+            const element = document.getElementById('report-content');
+            html2pdf(element, {
+                margin: 10,
+                filename: 'security_assessment_report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            });
+        }
+
+        function generateDetailedPDF() {
+            const element = document.getElementById('report-content');
+            element.classList.add('detailed');
+            html2pdf(element, {
+                margin: 10,
+                filename: 'detailed_security_assessment_report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).then(() => {
+                element.classList.remove('detailed');
+            });
+        }
+
+        function toggleDetailedElements() {
+            const elements = document.querySelectorAll('.recommendation, .background, .sources');
+            elements.forEach(element => {
+                if (element.classList.contains('hidden')) {
+                    element.classList.remove('hidden');
+                    element.classList.add('visible');
+                } else {
+                    element.classList.remove('visible');
+                    element.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

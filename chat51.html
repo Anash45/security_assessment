@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Security Vulnerability Assessment</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .option-button {
+            background-color: #e2e8f0;
+            color: black;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .option-button:hover {
+            filter: brightness(0.9);
+        }
+        .option-button.selected {
+            color: white;
+        }
+        .recommendation, .background {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f0f9ff;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <h1 id="dashboard-title">Facility Security Vulnerability Assessment</h1>
+
+    <div class="input-group">
+        <label for="facilityName">Facility Name:</label>
+        <input type="text" id="facilityName" oninput="updateTitle()">
+    </div>
+    <div class="input-group">
+        <label for="reportDate">Date of Report:</label>
+        <input type="date" id="reportDate">
+    </div>
+    <div class="input-group">
+        <label for="reportNumber">Report Number:</label>
+        <input type="text" id="reportNumber">
+    </div>
+
+    <h3>Security Management and Planning</h3>
+    <div id="security-management-questions"></div>
+    <h3>Personnel Security</h3>
+    <div id="personnel-questions"></div>
+    <h3>Security Force</h3>
+    <div id="security-force-questions"></div>
+    <h3>Perimeter and Access Control</h3>
+    <div id="perimeter-questions"></div>
+    <h3>Parking and Barriers</h3>
+    <div id="parking-questions"></div>
+    <h3>Access Control and Intrusion Detection</h3>
+    <div id="access-control-questions"></div>
+    <h3>Video Surveillance</h3>
+    <div id="video-surveillance-questions"></div>
+
+    <button onclick="generatePDF()">Generate PDF</button>
+
+    <script>
+        const securityManagementQuestions = [
+            "Does the facility have a designated security manager or security committee?"
+        ];
+
+        const personnelQuestions = [
+            "Does the facility have a comprehensive written security and emergency operations plan?",
+            "Are employees and volunteers trained on the security and emergency operations plan?",
+            "Are visitors or clients informed about relevant elements of the security and emergency operations plan?",
+            "Has the facility coordinated its security and emergency operations plan with local first responders?",
+            "Does the facility conduct regular exercises of the security and emergency operations plan?",
+            "Does the facility have lockdown, lockout, and shelter-in-place procedures?",
+            "Does the facility have mass notification capabilities?",
+            "Does the facility have crisis communications plans and procedures?",
+            "Does the facility receive threat information or security-related bulletins from external sources?",
+            "Does the facility participate in any external security or emergency preparedness working groups?"
+        ];
+
+        const securityForceQuestions = [
+            "Does the facility have a designated security force?",
+            "What is the size of the security force relative to the facility size?",
+            "What is the level of training of the security force?",
+            "Is the security force armed or unarmed?",
+            "Does the security force conduct regular patrols of the facility?",
+            "Does the security force use technology to enhance security operations?",
+            "What is the turnover rate of the security force personnel?",
+            "Does the facility have a robust recruitment process for the security force?",
+            "How does the security force coordinate with local law enforcement?",
+            "What is the overall effectiveness of the security force?"
+        ];
+
+        const perimeterQuestions = [
+            "Does the facility have a secure perimeter?",
+            "What type of fencing or barriers are used to secure the perimeter?",
+            "Are there controlled entry and exit points?",
+            "Is the perimeter regularly patrolled or monitored?",
+            "Are there any gaps or vulnerabilities in the perimeter security?",
+            "What type of access control measures are in place at entry points?",
+            "Is there adequate lighting along the perimeter?",
+            "Are there surveillance cameras monitoring the perimeter?",
+            "How does the facility respond to perimeter breaches?",
+            "What is the overall condition and effectiveness of the perimeter security?"
+        ];
+
+        const parkingQuestions = [
+            "Does the facility have designated parking areas?",
+            "Are parking areas secure and well-lit?",
+            "Is access to parking areas controlled?",
+            "Are there surveillance cameras monitoring parking areas?",
+            "Are parking areas regularly patrolled by security personnel?",
+            "Are there emergency call stations in parking areas?",
+            "What measures are in place to prevent vehicle theft or vandalism?",
+            "How does the facility manage access to parking areas?",
+            "What is the condition of the physical infrastructure of parking areas?",
+            "What is the overall effectiveness of parking security measures?"
+        ];
+
+        const accessControlQuestions = [
+            "Does the facility use access control systems?",
+            "What type of access control systems are in place?",
+            "Are access control systems regularly tested and updated?",
+            "Is access to sensitive areas restricted?",
+            "Are access control logs regularly reviewed?",
+            "What type of identification is required for access?",
+            "Are there measures in place to prevent unauthorized access?",
+            "How does the facility manage access control credentials?",
+            "What is the overall effectiveness of access control measures?",
+            "How does the facility respond to access control breaches?"
+        ];
+
+        const videoSurveillanceQuestions = [
+            "Does the facility have a camera system?",
+            "What type of camera system is in place?",
+            "Are cameras strategically placed to cover key areas?",
+            "Is the camera system regularly maintained and tested?",
+            "Are camera feeds monitored in real-time?",
+            "How long is camera footage retained?",
+            "Who has access to camera footage?",
+            "Is camera footage regularly reviewed?",
+            "How does the facility use camera footage for investigations?",
+            "What is the overall condition and capabilities of the camera system?"
+        ];
+
+        const optionsTemplate = [
+            { label: 'Very Low', color: '#ef4444' },
+            { label: 'Low', color: '#f97316' },
+            { label: 'Medium', color: '#eab308' },
+            { label: 'High', color: '#22c55e' },
+            { label: 'Very High', color: '#3b82f6' }
+        ];
+
+        const specificDescriptions = {
+            "Does the facility have a designated security manager or security committee?": [
+                "The facility does not have a security manager or committee.",
+                "The facility has a security manager or committee, but security management activities are sporadic.",
+                "The facility has a security manager or committee. Security management activities are regularly scheduled, but not coordinated with other departments.",
+                "The facility has a security manager or committee. Activities are regularly scheduled and coordinated, but additional personnel are needed.",
+                "The facility has a security manager or committee. Activities are fully coordinated and staffing levels fully support the security mission."
+            ],
+            "Does the facility have a comprehensive written security and emergency operations plan?": [
+                "The facility does not have a comprehensive written security and emergency operations plan.",
+                "The facility has a plan, but it is incomplete or outdated.",
+                "The facility has a comprehensive plan, but it is not regularly reviewed or updated.",
+                "The facility has a comprehensive plan that is regularly reviewed, but not all staff are familiar with it.",
+                "The facility has a comprehensive plan that is regularly reviewed and all staff are familiar with it."
+            ],
+            "Are employees and volunteers trained on the security and emergency operations plan?": [
+                "Employees and volunteers have not received training on the security and emergency operations plan.",
+                "Some employees and volunteers have received training, but it is not consistent.",
+                "Most employees and volunteers have received basic training, but advanced training is lacking.",
+                "All employees and volunteers have received comprehensive training, but it is not regularly updated.",
+                "All employees and volunteers have received comprehensive and regularly updated training."
+            ],
+            "Are visitors or clients informed about relevant elements of the security and emergency operations plan?": [
+                "Visitors or clients are not informed about the security and emergency operations plan.",
+                "Some visitors or clients are informed, but there is no consistent process.",
+                "Most visitors or clients are informed, but the information is not comprehensive.",
+                "All visitors or clients are informed, but the information is not regularly updated.",
+                "All visitors or clients are comprehensively informed and the information is regularly updated."
+            ],
+            "Has the facility coordinated its security and emergency operations plan with local first responders?": [
+                "The facility has not coordinated its plan with local first responders.",
+                "There has been some coordination, but it is sporadic.",
+                "There is regular coordination, but it is not comprehensive.",
+                "There is comprehensive coordination, but it is not regularly updated.",
+                "There is comprehensive and regularly updated coordination with local first responders."
+            ],
+            "Does the facility conduct regular exercises of the security and emergency operations plan?": [
+                "The facility does not conduct regular exercises of the plan.",
+                "Exercises are conducted sporadically and are not comprehensive.",
+                "Regular exercises are conducted, but not all aspects of the plan are covered.",
+                "Comprehensive exercises are conducted, but not regularly.",
+                "Comprehensive and regular exercises are conducted covering all aspects of the plan."
+            ],
+            "Does the facility have lockdown, lockout, and shelter-in-place procedures?": [
+                "The facility does not have lockdown, lockout, or shelter-in-place procedures.",
+                "Some procedures exist, but they are incomplete or outdated.",
+                "There are comprehensive procedures, but not all staff are familiar with them.",
+                "There are comprehensive procedures and most staff are familiar with them.",
+                "There are comprehensive and regularly updated procedures that all staff are familiar with."
+            ],
+            "Does the facility have mass notification capabilities?": [
+                "The facility does not have mass notification capabilities.",
+                "Some mass notification capabilities exist, but they are limited.",
+                "There are mass notification capabilities, but they are not regularly tested.",
+                "There are mass notification capabilities that are regularly tested, but not all staff are familiar with them.",
+                "There are comprehensive mass notification capabilities that are regularly tested and all staff are familiar with them."
+            ],
+            "Does the facility have crisis communications plans and procedures?": [
+                "The facility does not have crisis communications plans or procedures.",
+                "Some plans and procedures exist, but they are incomplete or outdated.",
+                "There are comprehensive plans and procedures, but not all staff are familiar with them.",
+                "There are comprehensive plans and procedures and most staff are familiar with them.",
+                "There are comprehensive and regularly updated plans and procedures that all staff are familiar with."
+            ],
+            "Does the facility receive threat information or security-related bulletins from external sources?": [
+                "The facility does not receive threat information or security-related bulletins from external sources.",
+                "Some information is received, but it is sporadic and not comprehensive.",
+                "Regular information is received, but it is not always timely or relevant.",
+                "Comprehensive information is received, but it is not regularly updated.",
+                "Comprehensive and regularly updated information is received from reliable external sources."
+            ],
+            "Does the facility participate in any external security or emergency preparedness working groups?": [
+                "The facility does not participate in any external security or emergency preparedness working groups.",
+                "There is some participation, but it is sporadic and not comprehensive.",
+                "Regular participation exists, but it is not always relevant.",
+                "Comprehensive participation exists, but it is not regularly updated.",
+                "Comprehensive and regularly updated participation in relevant working groups."
+            ]
+        };
+
+        const securityLevels = {
+            'Very Low': {
+                recommendation: 'Immediate action required: Establish a dedicated security management function. Designate a qualified individual as the security manager or form a security committee comprising key stakeholders. Develop a comprehensive security policy and implement basic security measures to address critical vulnerabilities. Conduct a thorough risk assessment to identify and prioritize security gaps. Establish relationships with local law enforcement and emergency services.',
+                background: 'At this level, the facility is at high risk due to the lack of a structured approach to security management. The absence of a designated security manager or committee leaves the organization without clear leadership in security matters. This situation leaves the facility highly vulnerable to various threats and unprepared for emergencies or crisis situations.',
+                references: [
+                    { title: 'CISA: Security Management', url: 'https://www.cisa.gov/security-management' },
+                    { title: 'ASIS International: Security Management', url: 'https://www.asisonline.org/publications--resources/security-topics/security-management/' }
+                ]
+            },
+            'Low': {
+                recommendation: 'Priority action needed: Enhance the existing security management structure. Provide advanced training for the security manager or committee members. Conduct a comprehensive risk assessment to identify and prioritize security gaps. Develop and implement a strategic security plan aligned with organizational goals. Implement a formal incident reporting and investigation process.',
+                background: 'At this level, while there may be some basic security measures in place, they are likely insufficient and not well-coordinated. The sporadic nature of security activities indicates a reactive rather than proactive approach to security management. This leaves the facility vulnerable to a wide range of threats and unprepared for evolving security challenges.',
+                references: [
+                    { title: 'DHS Risk Management Fundamentals', url: 'https://www.dhs.gov/sites/default/files/publications/risk-management-fundamentals.pdf' },
+                    { title: 'SANS Institute: Physical Security', url: 'https://www.sans.org/security-awareness-training/resources/physical-security' }
+                ]
+            },
+            'Medium': {
+                recommendation: 'Continued improvement required: Optimize the security management process. Integrate security considerations into all aspects of facility operations. Implement a continuous improvement cycle for security measures. Enhance coordination with external security partners and local law enforcement. Develop a comprehensive security awareness program for all employees.',
+                background: 'At this level, the facility has established basic security management practices. However, there\'s significant room for improvement in terms of integration, continuous assessment, and external partnerships. While security activities are regularly scheduled, the lack of coordination with other departments indicates potential silos in the organization\'s approach to security.',
+                references: [
+                    { title: 'CISA: Physical Security Measures', url: 'https://www.cisa.gov/physical-security' },
+                    { title: 'Security Industry Association (SIA): Physical Security', url: 'https://www.securityindustry.org/industry-standards/physical-security/' }
+                ]
+            },
+            'High': {
+                recommendation: 'Maintain and enhance: Sustain the robust security management structure. Implement advanced security technologies and methodologies. Conduct regular third-party security audits. Develop and maintain a culture of security awareness among all staff and stakeholders. Consider establishing a 24/7 security operations center (SOC) if not already in place.',
+                background: 'At this level, the facility has a well-established security management system. There\'s a dedicated security team, regular risk assessments, and a comprehensive security strategy. The focus is on maintaining this high standard and looking for areas of further improvement. However, the need for additional personnel suggests that the security function may be stretched thin.',
+                references: [
+                    { title: 'CISA: Cybersecurity', url: 'https://www.cisa.gov/cybersecurity' },
+                    { title: 'NIST: Cybersecurity Framework', url: 'https://www.nist.gov/cyberframework' }
+                ]
+            },
+            'Very High': {
+                recommendation: 'Industry-leading practices: Maintain exemplary security management standards. Share best practices with industry peers. Participate in developing industry security standards. Implement cutting-edge security technologies and predictive threat analysis capabilities. Establish a dedicated research and development team focused on emerging security technologies and methodologies.',
+                background: 'At this level, the facility is at the forefront of security management. It has a comprehensive, integrated approach to security that\'s regularly reviewed and updated. The security team is highly trained, well-resourced, and proactive, often leading in the development of new security practices. However, maintaining this high level of security requires significant ongoing investment in personnel, technology, and processes.',
+                references: [
+                    { title: 'ASIS International: Protection of Assets (POA)', url: 'https://www.asisonline.org/publications--resources/protection-of-assets/' },
+                    { title: 'CISA: Security of Soft Targets and Crowded Places–Resource Guide', url: 'https://www.cisa.gov/sites/default/files/publications/19_0424_cisa_soft-targets-and-crowded-places-resource-guide.pdf' }
+                ]
+            }
+        };
+
+        let selectedOption = {};
+
+        function updateTitle() {
+            const facilityName = document.getElementById('facilityName').value;
+            const title = facilityName ? `${facilityName} Security Vulnerability Assessment` : 'Facility Security Vulnerability Assessment';
+            document.getElementById('dashboard-title').innerText = title;
+        }
+
+        function renderQuestions() {
+            renderSection('security-management-questions', securityManagementQuestions, 'security-management');
+            renderSection('personnel-questions', personnelQuestions, 'personnel');
+            renderSection('security-force-questions', securityForceQuestions, 'security-force');
+            renderSection('perimeter-questions', perimeterQuestions, 'perimeter');
+            renderSection('parking-questions', parkingQuestions, 'parking');
+            renderSection('access-control-questions', accessControlQuestions, 'access-control');
+            renderSection('video-surveillance-questions', videoSurveillanceQuestions, 'video-surveillance');
+        }
+
+        function renderSection(containerId, questions, sectionName) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = questions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-${sectionName}-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('${sectionName}', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>: ${specificDescriptions[question][optionIndex]}
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-${sectionName}-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-${sectionName}-${index}" onclick="toggleBackground('${sectionName}', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-${sectionName}-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+        }
+
+        function selectOption(section, questionIndex, optionIndex) {
+            const option = optionsTemplate[optionIndex];
+            selectedOption[`${section}-${questionIndex}`] = option.label;
+
+            // Clear previous selections
+            const buttons = document.querySelectorAll(`#${section}-questions .question-group:nth-child(${questionIndex + 1}) .option-button`);
+            buttons.forEach(button => {
+                button.classList.remove('selected');
+                button.style.backgroundColor = '#e2e8f0';
+                button.style.color = 'black';
+            });
+
+            const selectedButton = document.getElementById(`option-${section}-${questionIndex}-${optionIndex}`);
+            selectedButton.classList.add('selected');
+            selectedButton.style.backgroundColor = option.color;
+            selectedButton.style.color = 'white';
+
+            updateUI(section, questionIndex, option.color);
+        }
+
+        function toggleBackground(section, questionIndex) {
+            showBackground[`${section}-${questionIndex}`] = !showBackground[`${section}-${questionIndex}`];
+            updateUI(section, questionIndex);
+        }
+
+        function updateUI(section, questionIndex, color) {
+            const recommendationDiv = document.getElementById(`recommendation-${section}-${questionIndex}`);
+            const backgroundDiv = document.getElementById(`background-${section}-${questionIndex}`);
+            const toggleButton = document.getElementById(`toggleBackground-${section}-${questionIndex}`);
+            const buttons = document.querySelectorAll(`#${section}-questions .question-group:nth-child(${questionIndex + 1}) .option-button`);
+
+            buttons.forEach(button => {
+                button.style.backgroundColor = '#e2e8f0';
+                button.style.color = 'black';
+            });
+
+            const selectedButton = document.querySelector(`#${section}-questions .question-group:nth-child(${questionIndex + 1}) .option-button.selected`);
+            if (selectedButton) {
+                selectedButton.style.backgroundColor = color;
+                selectedButton.style.color = 'white';
+            }
+
+            if (selectedOption[`${section}-${questionIndex}`] && securityLevels[selectedOption[`${section}-${questionIndex}`]]) {
+                recommendationDiv.style.display = 'block';
+                recommendationDiv.innerHTML = `<h4>Expert Recommendation:</h4><p>${securityLevels[selectedOption[`${section}-${questionIndex}`]].recommendation}</p>`;
+                toggleButton.style.display = 'block';
+                toggleButton.textContent = showBackground[`${section}-${questionIndex}`] ? 'Hide Background Information' : 'Show Background Information';
+
+                if (showBackground[`${section}-${questionIndex}`]) {
+                    backgroundDiv.style.display = 'block';
+                    backgroundDiv.innerHTML = `
+                        <h4>Background:</h4>
+                        <p>${securityLevels[selectedOption[`${section}-${questionIndex}`]].background}</p>
+                        <h4>References:</h4>
+                        <ul>
+                            ${securityLevels[selectedOption[`${section}-${questionIndex}`]].references.map(ref => `<li><a href="${ref.url}" target="_blank" rel="noopener noreferrer">${ref.title}</a></li>`).join('')}
+                        </ul>
+                    `;
+                } else {
+                    backgroundDiv.style.display = 'none';
+                }
+            } else {
+                recommendationDiv.style.display = 'none';
+                backgroundDiv.style.display = 'none';
+                toggleButton.style.display = 'none';
+            }
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFont('Roboto');
+            doc.setFontSize(16);
+            doc.text("Facility Security Vulnerability Assessment", 10, 10);
+
+            const facilityName = document.getElementById('facilityName').value;
+            const reportDate = document.getElementById('reportDate').value;
+            const reportNumber = document.getElementById('reportNumber').value;
+
+            doc.setFontSize(12);
+            doc.text(`Facility Name: ${facilityName}`, 10, 20);
+            doc.text(`Date of Report: ${reportDate}`, 10, 30);
+            doc.text(`Report Number: ${reportNumber}`, 10, 40);
+
+            let yOffset = 50;
+
+            function addSection(title, questions, section) {
+                doc.setFontSize(12);
+                doc.setFontStyle('bold');
+                doc.text(title, 10, yOffset);
+                yOffset += 10;
+
+                questions.forEach((question, index) => {
+                    const selected = selectedOption[`${section}-${index}`];
+                    const color = selected ? optionsTemplate.find(option => option.label === selected).color : '#000000';
+
+                    doc.setFontSize(10);
+                    doc.setTextColor(color);
+                    doc.text(question, 10, yOffset);
+                    yOffset += 10;
+
+                    if (selected) {
+                        doc.setTextColor(0, 0, 0);
+                        doc.text(`Selected: ${selected}`, 10, yOffset);
+                        yOffset += 10;
+
+                        const recommendation = securityLevels[selected]?.recommendation;
+                        if (recommendation) {
+                            doc.text(`Recommendation: ${recommendation}`, 10, yOffset);
+                            yOffset += 20;
+                        }
+
+                        const background = securityLevels[selected]?.background;
+                        if (background) {
+                            doc.text(`Background: ${background}`, 10, yOffset);
+                            yOffset += 20;
+                        }
+
+                        const references = securityLevels[selected]?.references;
+                        if (references && references.length > 0) {
+                            doc.text('References:', 10, yOffset);
+                            yOffset += 10;
+                            references.forEach(ref => {
+                                doc.text(`${ref.title}: ${ref.url}`, 10, yOffset);
+                                yOffset += 10;
+                            });
+                            yOffset += 10;
+                        }
+                    }
+                });
+            }
+
+            addSection("Security Management and Planning", securityManagementQuestions, 'security-management');
+            addSection("Personnel Security", personnelQuestions, 'personnel');
+            addSection("Security Force", securityForceQuestions, 'security-force');
+            addSection("Perimeter and Access Control", perimeterQuestions, 'perimeter');
+            addSection("Parking and Barriers", parkingQuestions, 'parking');
+            addSection("Access Control and Intrusion Detection", accessControlQuestions, 'access-control');
+            addSection("Video Surveillance", videoSurveillanceQuestions, 'video-surveillance');
+
+            doc.save("Facility_Security_Vulnerability_Assessment.pdf");
+        }
+
+        renderQuestions();
+    </script>
+</body>
+</html>
