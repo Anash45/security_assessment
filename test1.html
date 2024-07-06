@@ -70,7 +70,7 @@
                         // Add the question title
                         const questionTitle = document.createElement('div');
                         questionTitle.classList.add('question-title');
-                        questionTitle.textContent = `<b>Question ${i}</b>: ${question}`;
+                        questionTitle.innerHTML = `<b>Question ${i}</b>: ${question}`;
                         questionDiv.appendChild(questionTitle);
 
                         let j = 1;
@@ -82,7 +82,7 @@
 
                             // Add the option text
                             const optionTitle = document.createElement('div');
-                            optionTitle.textContent = `<b>Option ${j}</b>: ${optionText}`;
+                            optionTitle.innerHTML = `<b>Option ${j}</b>: ${optionText}`;
                             optionDiv.appendChild(optionTitle);
 
                             // Add the expert recommendation
@@ -104,7 +104,7 @@
                             details.referenceLinks.forEach((link, index) => {
                                 const linkElement = document.createElement('a');
                                 linkElement.href = link.url;
-                                linkElement.textContent = link.text;
+                                linkElement.innerHTML = link.text;
                                 linkElement.target = '_blank'; // Open link in new tab
                                 referencesDiv.appendChild(linkElement);
 
