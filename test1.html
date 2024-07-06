@@ -60,6 +60,7 @@
                     // Get the container element
                     const container = document.getElementById('questions-container');
 
+                    let i = 1;
                     // Iterate through the questions in the data
                     for (const [question, options] of Object.entries(data)) {
                         // Create a div for each question
@@ -69,9 +70,10 @@
                         // Add the question title
                         const questionTitle = document.createElement('div');
                         questionTitle.classList.add('question-title');
-                        questionTitle.textContent = `Question: ${question}`;
+                        questionTitle.textContent = `<b>Question ${i}</b>: ${question}`;
                         questionDiv.appendChild(questionTitle);
 
+                        let j = 1;
                         // Iterate through the options for each question
                         for (const [optionText, details] of Object.entries(options)) {
                             // Create a div for each option
@@ -80,7 +82,7 @@
 
                             // Add the option text
                             const optionTitle = document.createElement('div');
-                            optionTitle.textContent = `Option: ${optionText}`;
+                            optionTitle.textContent = `<b>Option ${j}</b>: ${optionText}`;
                             optionDiv.appendChild(optionTitle);
 
                             // Add the expert recommendation
@@ -115,8 +117,10 @@
 
                             // Append the option div to the question div
                             questionDiv.appendChild(optionDiv);
+                            j++;
                         }
 
+                        i++;
                         // Append the question div to the main container
                         container.appendChild(questionDiv);
                     }
