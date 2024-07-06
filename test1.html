@@ -76,6 +76,19 @@
                         let j = 1;
                         // Iterate through the options for each question
                         for (const [optionText, details] of Object.entries(options)) {
+
+                            let opt = "";
+                            if(j == 1){
+                                opt = "Very Low";
+                            }else if(j == 2){
+                                opt = "Low";
+                            }else if(j == 3){
+                                opt = "Medium";
+                            }else if(j == 4){
+                                opt = "High";
+                            }else if(j == 5){
+                                opt = "Very High";
+                            }
                             // Create a div for each option
                             const optionDiv = document.createElement('div');
                             optionDiv.classList.add('option');
