@@ -47,7 +47,7 @@ if (isset($_POST['login'])) {
         <meta name="description" content="">
         <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
         <meta name="generator" content="Hugo 0.84.0">
-        <title>MISSIONBERLIN2024</title>
+        <title>Login - Security Assessment</title>
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="./assets/fontawesome/css/all.css">
