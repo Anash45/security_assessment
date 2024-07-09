@@ -173,17 +173,27 @@ include './db_conn.php';
                 margin-bottom: 35px;
             }
         </style>
+        <script>
+            function updateFacilityName() {
+                let facilityName = $('#facilityName').val();
+                if (facilityName.length > 0) {
+                    $('.facility-name').text(facilityName);
+                } else {
+                    $('.facility-name').text('Facility');
+                }
+            }
+        </script>
     </head>
 
     <body>
-        <h1>Facility Security Vulnerability Assessment</h1>
+        <h1 class="doc-name"><span class="facility-name">Facility</span> Security Vulnerability Assessment</h1>
         <button onclick="clearAllData()">Clear all Data</button>
         <button onclick="clearResponses()">Clear all Security/Emergency Management Responses</button>
         <button id="dark-mode-toggle" onclick="toggleDarkMode()">Enable Dark Mode</button>
         <a href="./index.php" class="btn">Admin</a>
         <div class="input-group">
             <label for="facilityName">Facility Name:</label>
-            <input type="text" id="facilityName">
+            <input type="text" id="facilityName" onkeyup="updateFacilityName()">
         </div>
         <div class="input-group">
             <label for="reportDate">Date of Report:</label>
@@ -505,9 +515,10 @@ include './db_conn.php';
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
 
+                let docTitle = $('.doc-name').text();
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(16);
-                doc.text("Facility Security Self-Assessment", 10, 10);
+                doc.text(docTitle, 10, 10);
 
                 let yOffset = 30; // Initial yOffset
                 const pageHeight = doc.internal.pageSize.height;
