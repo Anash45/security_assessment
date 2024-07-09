@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Security Vulnerability Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            color: black;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        h1 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        body.dark-mode h1 {
+            color: #90caf9;
+            border-bottom: 2px solid #42a5f5;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            background-color: white;
+            color: black;
+        }
+        body.dark-mode input {
+            background-color: #424242;
+            color: #e0e0e0;
+            border: 1px solid #616161;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #3b82f6;
+            color: white;
+        }
+        body.dark-mode button {
+            background-color: #42a5f5;
+            color: black;
+        }
+        .question-group {
+            margin-bottom: 20px;
+        }
+        .recommendation, .background {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f0f9ff;
+            color: black;
+        }
+        body.dark-mode .recommendation, body.dark-mode .background {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        body.dark-mode a {
+            color: #90caf9;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .option-button {
+            background-color: #e2e8f0;
+            color: black;
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        body.dark-mode .option-button {
+            background-color: #424242;
+            color: #e0e0e0;
+        }
+        .option-button:hover {
+            filter: brightness(0.9);
+        }
+        .option-button.selected {
+            color: white;
+        }
+        #dark-mode-toggle {
+            margin: 10px;
+            padding: 10px;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        body.dark-mode #dark-mode-toggle {
+            background-color: #90caf9;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Facility Security Vulnerability Assessment</h1>
+    
+    <button onclick="clearAllData()">Clear all Data</button>
+    <button onclick="clearResponses()">Clear all Security/Emergency Management Responses</button>
+    <button id="dark-mode-toggle" onclick="toggleDarkMode()">Enable Dark Mode</button>
+
+    <div class="input-group">
+        <label for="facilityName">Facility Name:</label>
+        <input type="text" id="facilityName">
+    </div>
+    <div class="input-group">
+        <label for="reportDate">Date of Report:</label>
+        <input type="date" id="reportDate">
+    </div>
+    <div class="input-group">
+        <label for="reportNumber">Report Number:</label>
+        <input type="text" id="reportNumber">
+    </div>
+
+    <h3>Security Management and Planning</h3>
+    <div id="questions"></div>
+    
+    <h3>Personnel Security</h3>
+    <div id="personnel-questions"></div>
+
+    <h3>Security Force</h3>
+    <div id="security-force-questions"></div>
+
+    <h3>Perimeter and Access Control</h3>
+    <div id="perimeter-questions"></div>
+
+    <h3>Parking and Barriers</h3>
+    <div id="parking-questions"></div>
+
+    <h3>Access Control and Intrusion Detection</h3>
+    <div id="access-control-questions"></div>
+
+    <h3>Video Surveillance</h3>
+    <div id="video-surveillance-questions"></div>
+
+    <button onclick="downloadHtml()">Download HTML</button>
+    <button onclick="generatePDF()">Generate PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        const questions = [
+            "Does the facility have a designated security manager or security committee?",
+            "Does the facility have a comprehensive written security and emergency operations plan?",
+            "Are employees and volunteers trained on the security and emergency operations plan?",
+            "Are visitors or clients informed about relevant elements of the security and emergency operations plan?",
+            "Has the facility coordinated its security and emergency operations plan with local first responders?",
+            "Does the facility conduct regular exercises of the security and emergency operations plan?",
+            "Does the facility have lockdown, lockout, and shelter-in-place procedures?",
+            "Does the facility have mass notification capabilities?",
+            "Does the facility have crisis communications plans and procedures?",
+            "Does the facility receive threat information or security-related bulletins from external sources?",
+            "Does the facility participate in any external security or emergency preparedness working groups?"
+        ];
+
+        const personnelQuestions = [
+            "Does the facility conduct background checks on employees and volunteers?",
+            "Does the facility provide regular security awareness information to employees, volunteers, and clients?",
+            "Does the facility have procedures for handling bomb threats and suspicious items?",
+            "Does the facility have cash management controls?"
+        ];
+
+        const securityForceQuestions = [
+            "Does the facility have a security force or security team for daily operations?",
+            "What security training does the facility provide to security personnel, employees, or volunteers who fulfill security roles?",
+            "Does the security team conduct security-related inspections or screening before people gather?",
+            "Does the security team have appropriate communications equipment or panic alarms?",
+            "Does the facility assign personnel to provide security presence during times of high vulnerability?",
+            "Does the security team have designated posts/patrols and written post orders?",
+            "Are frontline staff (e.g., receptionists, customer service) trained in security awareness and threat detection?",
+            "Are there mechanisms for reporting concerning behaviors to security or management?"
+        ];
+
+        const perimeterQuestions = [
+            "Does the facility have a well-established perimeter using natural materials or fencing/walls?",
+            "Does the facility layout provide natural surveillance from the building to the outer perimeter?",
+            "Are public and private spaces clearly separated?",
+            "If the facility has a fence or wall, what is its primary purpose?",
+            "Does the facility have controlled entry gates?",
+            "Is the perimeter adequately illuminated?"
+        ];
+
+        const parkingQuestions = [
+            "Are vehicles parked at the facility monitored?",
+            "Does the facility have a policy to address vehicles parked for an extended period?",
+            "Does the facility control vehicular parking and circulation onsite?",
+            "Does the facility have high-speed vehicle approach routes?",
+            "What is the minimum standoff distance between the facility and parked vehicles?",
+            "Are parking areas adequately illuminated?"
+        ];
+
+        const accessControlQuestions = [
+            "Does the facility screen persons, bags, or packages at entry points?",
+            "Are facility doors closed and locked to prevent unauthorized access during operations?",
+            "Can facility doors be easily secured in an emergency?",
+            "Do exterior double doors have handles that can be tied together, potentially hindering evacuation?",
+            "Does the facility have a key control program or defined process for access card management?",
+            "Do exterior doors and windows have sufficient physical security to deter or delay an attack?",
+            "Does the facility have an intrusion detection system (IDS) or alarm system?",
+            "Does the interior layout provide multiple escape routes for emergency egress?"
+        ];
+
+        const videoSurveillanceQuestions = [
+            "Does the facility have a camera system?",
+            "Does the system use an effective combination of camera types (e.g., fixed, pan-tilt-zoom)?",
+            "Is the camera system monitored during operational hours?",
+            "Is camera footage recorded and reviewed regularly?",
+            "What is the overall condition and capabilities of the camera system?"
+        ];
+
+        const optionsTemplate = [
+            { label: 'Very Low', color: '#ef4444' },
+            { label: 'Low', color: '#f97316' },
+            { label: 'Medium', color: '#eab308' },
+            { label: 'High', color: '#22c55e' },
+            { label: 'Very High', color: '#3b82f6' }
+        ];
+
+        const securityLevels = {
+            'Very Low': {
+                recommendation: 'Immediate action required: Develop a comprehensive written security and emergency operations plan. Include key components such as threat assessments, emergency response procedures, and continuity of operations. Engage all relevant stakeholders in the planning process. Regularly review and update the plan to ensure it remains current and effective.',
+                background: 'A lack of a written security and emergency operations plan leaves the facility unprepared for emergencies. Without a clear plan, the facility cannot effectively respond to threats, potentially leading to chaos and increased risk during an incident.',
+                references: [
+                    { title: 'Ready.gov: Emergency Response Plan', url: 'https://www.ready.gov/plan' },
+                    { title: 'FEMA: Developing and Maintaining Emergency Operations Plans', url: 'https://www.fema.gov/media-library/assets/documents/25975' }
+                ]
+            },
+            'Low': {
+                recommendation: 'Priority action needed: Review and update the existing plan to ensure it is comprehensive and current. Engage all relevant stakeholders in the review process. Include detailed procedures for a variety of emergency scenarios and ensure all staff are trained on the plan.',
+                background: 'An incomplete or outdated plan cannot effectively address the facility\'s current risk environment. Regular updates and comprehensive reviews are necessary to ensure the plan remains relevant and effective.',
+                references: [
+                    { title: 'DHS Risk Management Fundamentals', url: 'https://www.dhs.gov/sites/default/files/publications/risk-management-fundamentals.pdf' },
+                    { title: 'SANS Institute: Physical Security', url: 'https://www.sans.org/security-awareness-training/resources/physical-security' }
+                ]
+            },
+            'Medium': {
+                recommendation: 'Continued improvement required: Conduct regular reviews and updates of the plan. Ensure that all staff members are familiar with their roles and responsibilities during an emergency. Integrate lessons learned from drills and actual incidents into the plan.',
+                background: 'While the facility has a plan in place, regular reviews and updates are necessary to address new threats and vulnerabilities. Staff training and familiarity with the plan are crucial for effective implementation.',
+                references: [
+                    { title: 'CISA: Physical Security Measures', url: 'https://www.cisa.gov/physical-security' },
+                    { title: 'Security Industry Association (SIA): Physical Security', url: 'https://www.securityindustry.org/industry-standards/physical-security/' }
+                ]
+            },
+            'High': {
+                recommendation: 'Maintain and enhance: Regularly review and test the plan to ensure it remains effective. Conduct comprehensive training and drills to ensure all staff are prepared to implement the plan. Continuously integrate new best practices and technologies into the plan.',
+                background: 'A regularly reviewed and tested plan ensures that the facility is prepared for a variety of emergencies. Continuous improvement and integration of new technologies help maintain the plan\'s effectiveness.',
+                references: [
+                    { title: 'CISA: Cybersecurity', url: 'https://www.cisa.gov/cybersecurity' },
+                    { title: 'NIST: Cybersecurity Framework', url: 'https://www.nist.gov/cyberframework' }
+                ]
+            },
+            'Very High': {
+                recommendation: 'Industry-leading practices: Ensure the plan is a living document that is regularly updated and improved. Share best practices with industry peers and participate in developing industry standards. Implement cutting-edge technologies and methodologies to enhance the plan.',
+                background: 'At this level, the facility\'s plan is comprehensive, regularly updated, and integrates the latest best practices and technologies. Continuous improvement and sharing best practices with peers ensure the plan remains at the forefront of industry standards.',
+                references: [
+                    { title: 'ASIS International: Protection of Assets (POA)', url: 'https://www.asisonline.org/publications--resources/protection-of-assets/' },
+                    { title: 'CISA: Security of Soft Targets and Crowded Places–Resource Guide', url: 'https://www.cisa.gov/sites/default/files/publications/19_0424_cisa_soft-targets-and-crowded-places-resource-guide.pdf' }
+                ]
+            }
+        };
+
+        let selectedOption = {};
+        let showBackground = {};
+
+        function renderQuestions() {
+            const questionsDiv = document.getElementById('questions');
+            questionsDiv.innerHTML = questions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-main-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('main', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-main-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-main-${index}" onclick="toggleBackground('main', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-main-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+
+            const personnelQuestionsDiv = document.getElementById('personnel-questions');
+            personnelQuestionsDiv.innerHTML = personnelQuestions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-personnel-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('personnel', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-personnel-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-personnel-${index}" onclick="toggleBackground('personnel', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-personnel-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+
+            const securityForceQuestionsDiv = document.getElementById('security-force-questions');
+            securityForceQuestionsDiv.innerHTML = securityForceQuestions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-security-force-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('security-force', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-security-force-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-security-force-${index}" onclick="toggleBackground('security-force', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-security-force-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+
+            const perimeterQuestionsDiv = document.getElementById('perimeter-questions');
+            perimeterQuestionsDiv.innerHTML = perimeterQuestions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-perimeter-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('perimeter', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-perimeter-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-perimeter-${index}" onclick="toggleBackground('perimeter', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-perimeter-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+
+            const parkingQuestionsDiv = document.getElementById('parking-questions');
+            parkingQuestionsDiv.innerHTML = parkingQuestions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-parking-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('parking', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-parking-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-parking-${index}" onclick="toggleBackground('parking', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-parking-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+
+            const accessControlQuestionsDiv = document.getElementById('access-control-questions');
+            accessControlQuestionsDiv.innerHTML = accessControlQuestions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-access-control-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('access-control', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-access-control-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-access-control-${index}" onclick="toggleBackground('access-control', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-access-control-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+
+            const videoSurveillanceQuestionsDiv = document.getElementById('video-surveillance-questions');
+            videoSurveillanceQuestionsDiv.innerHTML = videoSurveillanceQuestions.map((question, index) => 
+                `<div class="question-group">
+                    <h4>${question}</h4>
+                    ${optionsTemplate.map((option, optionIndex) => 
+                        `<button class="option-button" id="option-video-surveillance-${index}-${optionIndex}" style="background-color: #e2e8f0;"
+                            onclick="selectOption('video-surveillance', ${index}, ${optionIndex})">
+                            <strong>${option.label}</strong>
+                        </button>`
+                    ).join('')}
+                    <div id="recommendation-video-surveillance-${index}" class="recommendation" style="display: none;"></div>
+                    <button id="toggleBackground-video-surveillance-${index}" onclick="toggleBackground('video-surveillance', ${index})" style="display: none;">Show Background Information</button>
+                    <div id="background-video-surveillance-${index}" class="background" style="display: none;"></div>
+                </div>`
+            ).join('');
+        }
+
+        function selectOption(section, questionIndex, optionIndex) {
+            const option = optionsTemplate[optionIndex];
+            selectedOption[`${section}-${questionIndex}`] = option.label;
+
+            const buttons = document.querySelectorAll(`#${section}-questions .question-group:nth-child(${questionIndex + 1}) .option-button`);
+            buttons.forEach(button => {
+                button.classList.remove('selected');
+                button.style.backgroundColor = '#e2e8f0';
+                button.style.color = 'black';
+            });
+
+            const selectedButton = document.getElementById(`option-${section}-${questionIndex}-${optionIndex}`);
+            selectedButton.classList.add('selected');
+            updateUI(section, questionIndex, option.color);
+        }
+
+        function toggleBackground(section, questionIndex) {
+            showBackground[`${section}-${questionIndex}`] = !showBackground[`${section}-${questionIndex}`];
+            updateUI(section, questionIndex);
+        }
+
+        function updateUI(section, questionIndex, color) {
+            const recommendationDiv = document.getElementById(`recommendation-${section}-${questionIndex}`);
+            const backgroundDiv = document.getElementById(`background-${section}-${questionIndex}`);
+            const toggleButton = document.getElementById(`toggleBackground-${section}-${questionIndex}`);
+            const buttons = document.querySelectorAll(`#${section}-questions .question-group:nth-child(${questionIndex + 1}) .option-button`);
+
+            buttons.forEach(button => {
+                button.style.backgroundColor = '#e2e8f0';
+                button.style.color = 'black';
+            });
+
+            const selectedButton = document.querySelector(`#${section}-questions .question-group:nth-child(${questionIndex + 1}) .option-button.selected`);
+            if (selectedButton) {
+                selectedButton.style.backgroundColor = color;
+                selectedButton.style.color = 'white';
+            }
+
+            if (selectedOption[`${section}-${questionIndex}`] && securityLevels[selectedOption[`${section}-${questionIndex}`]]) {
+                recommendationDiv.style.display = 'block';
+                recommendationDiv.innerHTML = `<h4>Expert Recommendation:</h4><p>${securityLevels[selectedOption[`${section}-${questionIndex}`]].recommendation}</p>`;
+                toggleButton.style.display = 'block';
+                toggleButton.textContent = showBackground[`${section}-${questionIndex}`] ? 'Hide Background Information' : 'Show Background Information';
+
+                if (showBackground[`${section}-${questionIndex}`]) {
+                    backgroundDiv.style.display = 'block';
+                    backgroundDiv.innerHTML = `
+                        <h4>Background:</h4>
+                        <p>${securityLevels[selectedOption[`${section}-${questionIndex}`]].background}</p>
+                        <h4>References:</h4>
+                        <ul>
+                            ${securityLevels[selectedOption[`${section}-${questionIndex}`]].references.map(ref => `<li><a href="${ref.url}" target="_blank" rel="noopener noreferrer">${ref.title}</a></li>`).join('')}
+                        </ul>
+                    `;
+                } else {
+                    backgroundDiv.style.display = 'none';
+                }
+            } else {
+                recommendationDiv.style.display = 'none';
+                backgroundDiv.style.display = 'none';
+                toggleButton.style.display = 'none';
+            }
+        }
+
+        function clearAllData() {
+            document.getElementById('facilityName').value = '';
+            document.getElementById('reportDate').value = '';
+            document.getElementById('reportNumber').value = '';
+            selectedOption = {};
+            showBackground = {};
+            renderQuestions();
+            alert('All data cleared!');
+        }
+
+        function clearResponses() {
+            selectedOption = {};
+            showBackground = {};
+            renderQuestions();
+            alert('All Security/Emergency Management Responses cleared!');
+        }
+
+        function downloadHtml() {
+            const element = document.createElement('a');
+            const file = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+            element.href = URL.createObjectURL(file);
+            element.download = 'security-dashboard.html';
+            document.body.appendChild(element);
+            element.click();
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.text("Facility Security Self-Assessment", 10, 10);
+
+            const facilityName = document.getElementById('facilityName').value;
+            const reportDate = document.getElementById('reportDate').value;
+            const reportNumber = document.getElementById('reportNumber').value;
+
+            doc.setFontSize(12);
+            doc.text(`Facility Name: ${facilityName}`, 10, 20);
+            doc.text(`Date of Report: ${reportDate}`, 10, 30);
+            doc.text(`Report Number: ${reportNumber}`, 10, 40);
+
+            let yOffset = 50;
+
+            function addSection(title, questions, section) {
+                doc.setFontSize(14);
+                doc.text(title, 10, yOffset);
+                yOffset += 10;
+
+                questions.forEach((question, index) => {
+                    const selected = selectedOption[`${section}-${index}`];
+                    const color = selected ? optionsTemplate.find(option => option.label === selected).color : '#000000';
+
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(color);
+                    let lines = doc.splitTextToSize(question, 180);
+                    doc.text(lines, 10, yOffset);
+                    yOffset += 10 * lines.length;
+
+                    if (selected) {
+                        doc.setFont("helvetica", "normal");
+                        doc.setTextColor(0, 0, 0);
+                        doc.text(`Selected: ${selected}`, 10, yOffset);
+                        yOffset += 10;
+
+                        const recommendation = securityLevels[selected]?.recommendation;
+                        if (recommendation) {
+                            let recLines = doc.splitTextToSize(`Recommendation: ${recommendation}`, 180);
+                            doc.text(recLines, 10, yOffset);
+                            yOffset += 10 * recLines.length;
+                        }
+
+                        const background = securityLevels[selected]?.background;
+                        if (background) {
+                            yOffset += 10;
+                            let backLines = doc.splitTextToSize(`Background: ${background}`, 180);
+                            doc.text(backLines, 10, yOffset);
+                            yOffset += 10 * backLines.length;
+                        }
+
+                        const references = securityLevels[selected]?.references;
+                        if (references && references.length > 0) {
+                            yOffset += 10;
+                            doc.text('References:', 10, yOffset);
+                            yOffset += 10;
+                            references.forEach(ref => {
+                                let refLines = doc.splitTextToSize(`${ref.title}: ${ref.url}`, 180);
+                                doc.text(refLines, 10, yOffset);
+                                yOffset += 10 * refLines.length;
+                            });
+                            yOffset += 10;
+                        }
+                    }
+                });
+            }
+
+            addSection("Security Management and Planning", questions, 'main');
+            addSection("Personnel Security", personnelQuestions, 'personnel');
+            addSection("Security Force", securityForceQuestions, 'security-force');
+            addSection("Perimeter and Access Control", perimeterQuestions, 'perimeter');
+            addSection("Parking and Barriers", parkingQuestions, 'parking');
+            addSection("Access Control and Intrusion Detection", accessControlQuestions, 'access-control');
+            addSection("Video Surveillance", videoSurveillanceQuestions, 'video-surveillance');
+
+            doc.save("Facility_Security_Self-Assessment.pdf");
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const toggleButton = document.getElementById('dark-mode-toggle');
+            if (document.body.classList.contains('dark-mode')) {
+                toggleButton.textContent = 'Disable Dark Mode';
+            } else {
+                toggleButton.textContent = 'Enable Dark Mode';
+            }
+        }
+
+        renderQuestions();
+    </script>
+</body>
+</html>
