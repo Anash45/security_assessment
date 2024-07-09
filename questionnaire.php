@@ -60,7 +60,8 @@ include './db_conn.php';
                 border: 1px solid #616161;
             }
 
-            button {
+            button,
+            .btn {
                 margin: 5px;
                 padding: 10px 15px;
                 border: none;
@@ -68,6 +69,7 @@ include './db_conn.php';
                 cursor: pointer;
                 background-color: #3b82f6;
                 color: white;
+                font-size: 14px;
             }
 
             body.dark-mode button {
@@ -178,6 +180,7 @@ include './db_conn.php';
         <button onclick="clearAllData()">Clear all Data</button>
         <button onclick="clearResponses()">Clear all Security/Emergency Management Responses</button>
         <button id="dark-mode-toggle" onclick="toggleDarkMode()">Enable Dark Mode</button>
+        <a href="./index.php" class="btn">Admin</a>
         <div class="input-group">
             <label for="facilityName">Facility Name:</label>
             <input type="text" id="facilityName">
