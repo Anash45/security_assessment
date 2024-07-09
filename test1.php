@@ -3,9 +3,9 @@
 require_once 'db_conn.php';
 
 // Admin details
-$name = 'Admin';
-$email = 'futuretest45@gmail.com';
-$password = 'AsdfZxcv@123';
+$name = 'Test Admin';
+$email = 'admin@gmail.com';
+$password = 'asdfasdf';
 
 // Hash the password
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
