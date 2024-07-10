@@ -203,6 +203,10 @@ include './db_conn.php';
             <label for="reportNumber">Report Number:</label>
             <input type="text" id="reportNumber">
         </div>
+        <div class="input-group">
+            <label><input type="checkbox" id="includeName" value="Yes" style="width: fit-content;"> Include facility
+                name in report title?</label>
+        </div>
         <?php
 
 
@@ -227,7 +231,7 @@ include './db_conn.php';
                     // Step 2: Fetch questions for the current question type
                     $sqlQuestions = "SELECT question_id, question_text
                              FROM questions
-                             WHERE question_type_id = $typeId";
+                             WHERE question_type_id = $typeId AND `hidden` = 0";
                     $resultQuestions = $conn->query($sqlQuestions);
 
                     if ($resultQuestions->num_rows > 0) {
@@ -516,6 +520,11 @@ include './db_conn.php';
                 const doc = new jsPDF();
 
                 let docTitle = $('.doc-name').text();
+
+                if (!$('#includeName:checked').length > 0) {
+                    docTitle = 'Facility Security Vulnerability Assessment';
+                }
+
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(16);
                 doc.text(docTitle, 10, 10);
@@ -524,9 +533,9 @@ include './db_conn.php';
                 const pageHeight = doc.internal.pageSize.height;
                 const lineHeight = 7; // Adjust the line height based on your needs
                 // Get values from input fields
-                const facilityName = $('#facilityName').val();
-                const reportDate = $('#reportDate').val();
-                const reportNumber = $('#reportNumber').val();
+                let facilityName = $('#facilityName').val();
+                let reportDate = $('#reportDate').val();
+                let reportNumber = $('#reportNumber').val();
 
                 // Add input field values to PDF
                 doc.setFontSize(12);
@@ -589,19 +598,32 @@ include './db_conn.php';
                         lines = doc.splitTextToSize(`${selectedOption}`, 180);
                         addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                         doc.text(lines, 15, yOffset);
-                        yOffset += (lines.length * lineHeight) + 0.1;
+                        yOffset += (lines.length * lineHeight) + 5;
 
-                        // Add background text
-                        if (backgroundText) {
-                            lines = doc.splitTextToSize(`Background: ${backgroundText}`, 180);
-                            addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
-                            doc.text(lines, 15, yOffset);
-                            yOffset += (lines.length * lineHeight) + 0.1;
-                        }
 
                         // Add recommendation text
                         if (recommendationText) {
-                            lines = doc.splitTextToSize(`Recommendation: ${recommendationText}`, 180);
+                            doc.setFont("helvetica", "bold");
+                            lines = doc.splitTextToSize(`Recommendation: `, 180);
+                            addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
+                            doc.text(lines, 15, yOffset);
+                            yOffset += (lineHeight);
+                            doc.setFont("helvetica", "normal");
+                            lines = doc.splitTextToSize(`${recommendationText}`, 180);
+                            addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
+                            doc.text(lines, 15, yOffset);
+                            yOffset += (lines.length * lineHeight) + 5;
+                        }
+
+                        // Add background text
+                        if (backgroundText) {
+                            doc.setFont("helvetica", "bold");
+                            lines = doc.splitTextToSize(`Background: `, 180);
+                            addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
+                            doc.text(lines, 15, yOffset);
+                            yOffset += (lineHeight);
+                            doc.setFont("helvetica", "normal");
+                            lines = doc.splitTextToSize(`${backgroundText}`, 180);
                             addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                             doc.text(lines, 15, yOffset);
                             yOffset += (lines.length * lineHeight) + 0.1;
@@ -609,12 +631,13 @@ include './db_conn.php';
 
                         // Add references (links)
                         const $references = $(this).find('.background > ul > li > a');
-                        if ($references.length > 0) {
+                        if ($references.length > 0 && $(this).find('.background').is(':visible')) {
                             yOffset += 5;
                             addPageIfNeeded(10); // Check if new page is needed
-                            doc.setFont("helvetica", "normal");
+                            doc.setFont("helvetica", "bold");
                             doc.text('References:', 15, yOffset);
-                            yOffset += 5;
+                            yOffset += (lineHeight);
+                            doc.setFont("helvetica", "normal");
                             $references.each(function () {
                                 const refText = $(this).text().trim();
                                 const refUrl = $(this).attr('href').trim();

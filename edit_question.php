@@ -138,15 +138,15 @@ $page = 'questions';
                                     $optNum = 1;
                                     while ($row2 = mysqli_fetch_assoc($result2)) {
 
-                                        if ($optNum == 0) {
+                                        if ($optNum == 1) {
                                             $optText = 'Very Low';
-                                        } elseif ($optNum == 1) {
-                                            $optText = 'Low';
                                         } elseif ($optNum == 2) {
-                                            $optText = 'Medium';
+                                            $optText = 'Low';
                                         } elseif ($optNum == 3) {
-                                            $optText = 'High';
+                                            $optText = 'Medium';
                                         } elseif ($optNum == 4) {
+                                            $optText = 'High';
+                                        } elseif ($optNum == 5) {
                                             $optText = 'Very High';
                                         }
                                         ?>

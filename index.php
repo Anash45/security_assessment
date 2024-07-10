@@ -16,10 +16,28 @@ if (isset($_GET['delete_id'])) {
     } else {
         $info = '<div class="alert alert-danger" role="alert">Error deleting question.</div>';
     }
+} else if (isset($_GET['hide'])) {
+    $id = $_GET['hide'];
+    $query = "UPDATE questions SET hidden = 1 WHERE question_id = $id";
+    $result = mysqli_query($conn, $query);
+    if ($result) {
+        $info = '<div class="alert alert-success" role="alert">Question hidden successfully.</div>';
+    } else {
+        $info = '<div class="alert alert-danger" role="alert">Error hiding question.</div>';
+    }
+} else if (isset($_GET['show'])) {
+    $id = $_GET['show'];
+    $query = "UPDATE questions SET hidden = 0 WHERE question_id = $id";
+    $result = mysqli_query($conn, $query);
+    if ($result) {
+        $info = '<div class="alert alert-success" role="alert">Question shown successfully.</div>';
+    } else {
+        $info = '<div class="alert alert-danger" role="alert">Error showing question.</div>';
+    }
 }
 
 // Fetch all questions from the database
-$query = "SELECT q.question_id, q.question_text, qt.type 
+$query = "SELECT q.question_id, q.question_text, q.hidden, qt.type 
           FROM questions q
           INNER JOIN question_types qt ON q.question_type_id = qt.id";
 $result = mysqli_query($conn, $query);
@@ -84,13 +102,15 @@ $page = 'questions';
                             while ($row = mysqli_fetch_assoc($result)) {
                                 $questionId = $row['question_id'];
                                 $questionText = $row['question_text'];
+                                $hide_show_btn = ($row['hidden']) ? "<a href='?show={$questionId}' class='text-white px-2 my-1 d-inline-block py-1 rounded bg-success'><i class='fa fa-eye'></i></a>" : "<a href='?hide={$questionId}' class='text-white px-2 my-1 d-inline-block py-1 rounded bg-warning'><i class='fa fa-eye-slash'></i></a>";
                                 echo "<tr>
                             <td>{$questionId}</td>
                             <td>{$row['type']}</td>
                             <td>{$questionText}</td>
                             <td class='text-center'>
-                                <a href='edit_question.php?id={$questionId}' class='text-white px-2 py-1 rounded bg-primary'><i class='fa fa-edit'></i></a>
-                                <a href='?delete_id={$questionId}' class='text-white px-2 py-1 rounded bg-danger' onclick='return confirm(\"Are you sure you want to delete this question?\");'><i class='fa fa-trash'></i></a>
+                            {$hide_show_btn}
+                                <a href='edit_question.php?id={$questionId}' class='text-white px-2 my-1 d-inline-block py-1 rounded bg-primary'><i class='fa fa-edit'></i></a>
+                                <a href='?delete_id={$questionId}' class='text-white px-2 my-1 d-inline-block py-1 rounded bg-danger' onclick='return confirm(\"Are you sure you want to delete this question?\");'><i class='fa fa-trash'></i></a>
                             </td>
                           </tr>";
                             }
