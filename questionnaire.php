@@ -380,6 +380,7 @@ include './db_conn.php';
                 // Get the target button element using jQuery
                 var $target = $(event.currentTarget);
 
+                $target.siblings('.option-button').removeClass('selected-option');
                 $target.addClass('selected-option');
                 // Find the closest `.question-group` parent element using jQuery
                 var $questionGroup = $target.closest('.question-group');
@@ -591,14 +592,44 @@ include './db_conn.php';
                         let lines = doc.splitTextToSize(questionTitle, 180); // Adjust width as needed
                         addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                         doc.text(lines, 15, yOffset);
-                        yOffset += (lines.length * lineHeight) + 0.1; // Increment yOffset based on number of lines
+                        yOffset += (lines.length * lineHeight) + 5; // Increment yOffset based on number of lines
 
-                        // Add selected option text
+
+                        // Split the selected option
+                        let parts = selectedOption.split(':');
+                        let optionType = parts[0].trim();
+                        let optionText = parts[1].trim();
+
+                        // Find the corresponding background color
+                        let bgColor = '#808080'; // Default background color if not found
+                        let option = optionsTemplate.find(opt => opt.label === optionType);
+                        if (option) {
+                            bgColor = option.color;
+                        }
+
+                        // Add background color behind the section
+                        doc.setFillColor(bgColor);
+                        doc.roundedRect(12, yOffset - 7.5, 188, (lines.length * lineHeight) + 12, 3, 3, 'FD');
+
+                        let textColor = '#FFFFFF';
+
+                        doc.setTextColor(textColor);
+                        // Set font for optionType (bold)
+                        doc.setFont("helvetica", "bold");
+                        lines = doc.splitTextToSize(optionType, 180);
+                        addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
+                        doc.text(lines, 15, yOffset);
+                        yOffset += (lines.length * lineHeight) + 0;
+
+                        // Set font for optionText (normal)
                         doc.setFont("helvetica", "normal");
-                        lines = doc.splitTextToSize(`${selectedOption}`, 180);
+                        lines = doc.splitTextToSize(optionText, 180);
                         addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                         doc.text(lines, 15, yOffset);
                         yOffset += (lines.length * lineHeight) + 5;
+
+
+                        doc.setTextColor(0);
 
 
                         // Add recommendation text
