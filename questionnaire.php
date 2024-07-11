@@ -587,7 +587,7 @@ include './db_conn.php';
                         const recommendationText = $(this).find('.recommendation > p').text().trim();
 
                         // Add question title to PDF
-                        doc.setFontSize(12);
+                        doc.setFontSize(16);
                         doc.setFont("helvetica", "bold");
                         let lines = doc.splitTextToSize(questionTitle, 180); // Adjust width as needed
                         addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
