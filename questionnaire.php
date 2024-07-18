@@ -207,6 +207,9 @@ include './db_conn.php';
             <label><input type="checkbox" id="includeName" value="Yes" style="width: fit-content;"> Include facility
                 name in report title?</label>
         </div>
+        <div class="input-group">
+            <label><input type="checkbox" id="includeLinks" value="Yes" style="width: fit-content;"> Include links in report?</label>
+        </div>
         <?php
 
 
@@ -662,7 +665,8 @@ include './db_conn.php';
 
                         // Add references (links)
                         const $references = $(this).find('.background > ul > li > a');
-                        if ($references.length > 0 && $(this).find('.background').is(':visible')) {
+
+                        if ($references.length > 0 && $('#includeLinks:checked').length > 0) {
                             yOffset += 5;
                             addPageIfNeeded(10); // Check if new page is needed
                             doc.setFont("helvetica", "bold");
