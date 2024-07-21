@@ -208,7 +208,8 @@ include './db_conn.php';
                 name in report title?</label>
         </div>
         <div class="input-group">
-            <label><input type="checkbox" id="includeLinks" value="Yes" style="width: fit-content;"> Include links in report?</label>
+            <label><input type="checkbox" id="includeLinks" value="Yes" style="width: fit-content;"> Include links in
+                report?</label>
         </div>
         <?php
 
@@ -393,7 +394,7 @@ include './db_conn.php';
                 if ($questionGroup.length > 0) {
                     var $linksUL = $questionGroup.find('.background ul');
                     // Remove background color from all option buttons within this question group
-                    $questionGroup.find('.option-button').css({ 'background-color': '', 'color': '#000' });
+                    $questionGroup.find('.option-button').css({ 'background-color': ''});
 
                     // Find all option buttons within the `.question-group` div
                     var $optionButtons = $questionGroup.find('.option-button');
@@ -610,9 +611,14 @@ include './db_conn.php';
                             bgColor = option.color;
                         }
 
+
+                        let lines1 = doc.splitTextToSize(optionType, 180);
+                        let lines2 = doc.splitTextToSize(optionText, 180);
+                        let lines3 = lines1.length + lines2.length;
+
                         // Add background color behind the section
                         doc.setFillColor(bgColor);
-                        doc.roundedRect(12, yOffset - 7.5, 188, (lines.length * lineHeight) + 12, 3, 3, 'FD');
+                        doc.roundedRect(12, yOffset - 7.5, 188, (lines3 * lineHeight) + 5, 3, 3, 'FD');
 
                         let textColor = '#FFFFFF';
 
@@ -629,7 +635,7 @@ include './db_conn.php';
                         lines = doc.splitTextToSize(optionText, 180);
                         addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                         doc.text(lines, 15, yOffset);
-                        yOffset += (lines.length * lineHeight) + 5;
+                        yOffset += (lines.length * lineHeight) + 10;
 
 
                         doc.setTextColor(0);
