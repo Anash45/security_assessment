@@ -172,6 +172,10 @@ include './db_conn.php';
             .question-group {
                 margin-bottom: 35px;
             }
+
+            .selected-option {
+                color: #FFF !important;
+            }
         </style>
         <script>
             function updateFacilityName() {
@@ -306,7 +310,7 @@ include './db_conn.php';
             id="option-' . htmlspecialchars($typeToID, ENT_QUOTES, 'UTF-8') . '-' . htmlspecialchars($questionId, ENT_QUOTES, 'UTF-8') . '-' . htmlspecialchars($optionId, ENT_QUOTES, 'UTF-8') . '" 
             onclick="selectOption(event, \'' . addslashes(htmlspecialchars($background, ENT_QUOTES, 'UTF-8')) . '\', \'' . addslashes(htmlspecialchars($recommendation, ENT_QUOTES, 'UTF-8')) . '\', \'' . htmlspecialchars(addslashes($referencesJSON), ENT_QUOTES, 'UTF-8') . '\', ' . htmlspecialchars($optionId, ENT_QUOTES, 'UTF-8') . ')">';
 
-                                    $output .= '<strong>' . $optText . '</strong>: ' . $optionText . '';
+                                    $output .= '<strong>' . $optText . '</strong>: <span>' . $optionText . '</span>';
                                     $output .= '</button>';
                                     $optNum++;
                                 }
@@ -394,7 +398,7 @@ include './db_conn.php';
                 if ($questionGroup.length > 0) {
                     var $linksUL = $questionGroup.find('.background ul');
                     // Remove background color from all option buttons within this question group
-                    $questionGroup.find('.option-button').css({ 'background-color': ''});
+                    $questionGroup.find('.option-button').css({ 'background-color': '' });
 
                     // Find all option buttons within the `.question-group` div
                     var $optionButtons = $questionGroup.find('.option-button');
@@ -408,7 +412,7 @@ include './db_conn.php';
                     // Set background color based on index
                     if (index >= 0 && index < optionsTemplate.length) {
                         var color = optionsTemplate[index].color;
-                        $target.css({ 'background-color': color, 'color': '#FFF' });
+                        $target.css({ 'background-color': color });
                     }
 
                     // Update background, recommendation, and other functionality as needed
@@ -520,6 +524,9 @@ include './db_conn.php';
                 document.body.appendChild(element);
                 element.click();
             }
+
+
+
             async function generatePDF() {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
@@ -586,9 +593,10 @@ include './db_conn.php';
                     // Iterate through each selected question in this type
                     $(this).find('.question-selected').each(function (idx) {
                         const questionTitle = $(this).find('h4.question-text').text();
-                        const selectedOption = $(this).find('.selected-option').text().trim();
-                        const backgroundText = $(this).find('.background > p').text().trim();
-                        const recommendationText = $(this).find('.recommendation > p').text().trim();
+                        const optionType = $(this).find('.selected-option>strong').text();
+                        const optionText = $(this).find('.selected-option>span').text();
+                        const backgroundText = $(this).find('.background > p').text();
+                        const recommendationText = $(this).find('.recommendation > p').text();
 
                         // Add question title to PDF
                         doc.setFontSize(16);
@@ -598,11 +606,6 @@ include './db_conn.php';
                         doc.text(lines, 15, yOffset);
                         yOffset += (lines.length * lineHeight) + 5; // Increment yOffset based on number of lines
 
-
-                        // Split the selected option
-                        let parts = selectedOption.split(':');
-                        let optionType = parts[0].trim();
-                        let optionText = parts[1].trim();
 
                         // Find the corresponding background color
                         let bgColor = '#808080'; // Default background color if not found
@@ -626,14 +629,14 @@ include './db_conn.php';
                         // Set font for optionType (bold)
                         doc.setFont("helvetica", "bold");
                         lines = doc.splitTextToSize(optionType, 180);
-                        addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
+                        // addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                         doc.text(lines, 15, yOffset);
                         yOffset += (lines.length * lineHeight) + 0;
 
                         // Set font for optionText (normal)
                         doc.setFont("helvetica", "normal");
                         lines = doc.splitTextToSize(optionText, 180);
-                        addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
+                        // addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                         doc.text(lines, 15, yOffset);
                         yOffset += (lines.length * lineHeight) + 10;
 
