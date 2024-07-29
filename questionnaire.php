@@ -575,7 +575,7 @@ include './db_conn.php';
                         yOffset = 20; // Reset yOffset for the new page, considering top margin
                     }
                 };
-
+                let quesNum = 1;
                 // Iterate through each selected question type
                 $('.question-type-selected').each(function (index) {
                     const sectionTitle = $(this).find('h3').text();
@@ -592,7 +592,7 @@ include './db_conn.php';
 
                     // Iterate through each selected question in this type
                     $(this).find('.question-selected').each(function (idx) {
-                        const questionTitle = $(this).find('h4.question-text').text();
+                        const questionTitle = quesNum + '.  ' +$(this).find('h4.question-text').text();
                         const optionType = $(this).find('.selected-option>strong').text();
                         const optionText = $(this).find('.selected-option>span').text();
                         const backgroundText = $(this).find('.background > p').text();
@@ -601,6 +601,7 @@ include './db_conn.php';
                         // Add question title to PDF
                         doc.setFontSize(16);
                         doc.setFont("helvetica", "bold");
+                        doc.setTextColor(0); // Black text color
                         let lines = doc.splitTextToSize(questionTitle, 180); // Adjust width as needed
                         addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
                         doc.text(lines, 15, yOffset);
@@ -684,6 +685,7 @@ include './db_conn.php';
                             doc.setFont("helvetica", "normal");
                             $references.each(function () {
                                 const refText = $(this).text().trim();
+                                doc.setTextColor('#3b82f6');
                                 const refUrl = $(this).attr('href').trim();
                                 lines = doc.splitTextToSize(`${refText}: ${refUrl}`, 180);
                                 addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
@@ -693,8 +695,9 @@ include './db_conn.php';
                         }
 
                         // Add some space between questions
-                        yOffset += 5;
+                        yOffset += 20;
                         addPageIfNeeded(5); // Check if new page is needed
+                        quesNum++;
                     });
 
                     // Add space between sections
