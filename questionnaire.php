@@ -533,9 +533,6 @@ include './db_conn.php';
 
                 let docTitle = $('.doc-name').text();
 
-                if (!$('#includeName:checked').length > 0) {
-                    docTitle = '';
-                }
 
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(16);
@@ -549,12 +546,16 @@ include './db_conn.php';
                 let reportDate = $('#reportDate').val();
                 let reportNumber = $('#reportNumber').val();
 
-                // Add input field values to PDF
-                doc.setFontSize(12);
-                doc.text("Facility Name: ", 10, yOffset);
-                doc.setFont("helvetica", "normal");
-                doc.text(facilityName, 45, yOffset);
-                yOffset += 10;
+
+
+                if (!$('#includeName:checked').length > 0) {
+                    // Add input field values to PDF
+                    doc.setFontSize(12);
+                    doc.text("Facility Name: ", 10, yOffset);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(facilityName, 45, yOffset);
+                    yOffset += 10;
+                }
 
                 doc.setFont("helvetica", "bold");
                 doc.text("Date of Report: ", 10, yOffset);
