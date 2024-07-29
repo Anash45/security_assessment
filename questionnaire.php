@@ -548,9 +548,9 @@ include './db_conn.php';
 
 
 
+                doc.setFontSize(12);
                 if (!$('#includeName:checked').length > 0) {
                     // Add input field values to PDF
-                    doc.setFontSize(12);
                     doc.text("Facility Name: ", 10, yOffset);
                     doc.setFont("helvetica", "normal");
                     doc.text(facilityName, 45, yOffset);
@@ -593,7 +593,7 @@ include './db_conn.php';
 
                     // Iterate through each selected question in this type
                     $(this).find('.question-selected').each(function (idx) {
-                        const questionTitle = quesNum + '.  ' + $(this).find('h4.question-text').text();
+                        const questionTitle = quesNum + '. ' + $(this).find('h4.question-text').text();
                         const optionType = $(this).find('.selected-option>strong').text();
                         const optionText = $(this).find('.selected-option>span').text();
                         const backgroundText = $(this).find('.background > p').text();
