@@ -534,7 +534,7 @@ include './db_conn.php';
                 let docTitle = $('.doc-name').text();
 
                 if (!$('#includeName:checked').length > 0) {
-                    docTitle = 'Facility Security Vulnerability Assessment';
+                    docTitle = '';
                 }
 
                 doc.setFont("helvetica", "bold");
@@ -592,7 +592,7 @@ include './db_conn.php';
 
                     // Iterate through each selected question in this type
                     $(this).find('.question-selected').each(function (idx) {
-                        const questionTitle = quesNum + '.  ' +$(this).find('h4.question-text').text();
+                        const questionTitle = quesNum + '.  ' + $(this).find('h4.question-text').text();
                         const optionType = $(this).find('.selected-option>strong').text();
                         const optionText = $(this).find('.selected-option>span').text();
                         const backgroundText = $(this).find('.background > p').text();
@@ -685,13 +685,30 @@ include './db_conn.php';
                             doc.setFont("helvetica", "normal");
                             $references.each(function () {
                                 const refText = $(this).text().trim();
-                                doc.setTextColor('#3b82f6');
                                 const refUrl = $(this).attr('href').trim();
-                                lines = doc.splitTextToSize(`${refText}: ${refUrl}`, 180);
+
+                                // Set text color for the link
+                                doc.setTextColor('#3b82f6');
+
+                                // Split the text if needed (adjust lineHeight if required)
+                                const lines = doc.splitTextToSize(refText, 180);
                                 addPageIfNeeded(lines.length * lineHeight); // Check if new page is needed
-                                doc.text(lines, 15, yOffset);
-                                yOffset += (lines.length * lineHeight) + 0.1;
+
+                                // Define the starting y position
+                                let currentYOffset = yOffset;
+
+                                // Add text to the PDF
+                                doc.text(lines, 15, currentYOffset);
+
+                                // Add the clickable link
+                                lines.forEach((line, index) => {
+                                    doc.link(15, currentYOffset + (index * lineHeight), 180, lineHeight, { url: refUrl });
+                                });
+
+                                // Update yOffset for the next block of text
+                                yOffset += (lines.length * lineHeight) + 0.3;
                             });
+
                         }
 
                         // Add some space between questions
