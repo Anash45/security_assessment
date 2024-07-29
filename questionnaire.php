@@ -549,7 +549,7 @@ include './db_conn.php';
 
 
                 doc.setFontSize(12);
-                if (!$('#includeName:checked').length > 0) {
+                if ($('#includeName:checked').length > 0) {
                     // Add input field values to PDF
                     doc.text("Facility Name: ", 10, yOffset);
                     doc.setFont("helvetica", "normal");
